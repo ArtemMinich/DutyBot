@@ -1,4 +1,4 @@
-FROM openjdk:23-jdk AS build-stage
+FROM openjdk:19-jdk-alpine3.16 AS build-stage
 WORKDIR /api
 
 COPY mvnw .
@@ -11,5 +11,6 @@ RUN ./mvnw package -DskipTests
 
 FROM openjdk:19-jdk-alpine3.16 AS run-stage
 RUN apk --no-cache add curl
-COPY --from=build-stage /api/target/DutyBot*.jar ./DutyBot.jar
+
+COPY --from=build-stage /api/target/duty-bot-api*.jar ./DutyBot.jar
 CMD ["java", "-jar", "DutyBot.jar"]

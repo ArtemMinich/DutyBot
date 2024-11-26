@@ -3,24 +3,25 @@ services:
     build:
       context: ./duty-bot-api
       dockerfile: Dockerfile
-      target: build-stage
     container_name: duty-api
     environment:
       SERVER_PORT: ${SERVER_PORT}
-      BD_HOST: database
+      BD_HOST: ${BD_HOST}
       BD_PORT: ${BD_PORT}
       BD_USERNAME: ${BD_USERNAME}
       BD_PASSWORD: ${BD_PASSWORD}
       BD_NAME: ${BD_NAME}
     ports:
       - "${SERVER_PORT}:8080"
+    networks:
+      - internal-duty-bot-network
+      - external-duty-bot-network
     restart: unless-stopped
 
   duty-bot:
     build:
       context: ./duty-bot
       dockerfile: Dockerfile
-      target: run-stage
     container_name: duty-bot
     environment:
       BOT_TOKEN: ${BOT_TOKEN}
@@ -30,4 +31,12 @@ services:
       - "3000:3000"
     depends_on:
       - duty-api
+    networks:
+      - internal-duty-bot-network
     restart: unless-stopped
+
+networks:
+  internal-duty-bot-network:
+    name: internal-duty-bot-network
+  external-duty-bot-network:
+    name: external-duty-bot-network
