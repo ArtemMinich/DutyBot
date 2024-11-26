@@ -18,17 +18,31 @@ public class BotRestController {
         String command = commandRequest.command();
         String args = commandRequest.args();
         return switch (command) {
-            case "/start" -> new CommandResponse("фініш блять");
-            case "/give-ebashka" -> {
+            case "/giveebashka" -> {
                 String content = cadetService.giveEbashkaCadets(args);
                 yield new CommandResponse(content.isEmpty()?"Немає людей":content);
             }
-            case "/all-ebashka" -> {
+                case "/allebashka" -> {
                 String content = cadetService.getAllEbashkaCadets();
                 yield new CommandResponse(content);
             }
-            case "/stop" -> new CommandResponse("ok");
-            default -> null;
+            case "/addebashka" -> {
+                String content = cadetService.addEbashka(args);
+                yield new CommandResponse(content);
+            }
+            case "/removeebashka" -> {
+                String content = cadetService.removeEbashka(args);
+                yield new CommandResponse(content);
+            }
+            case "/freeebashka" -> {
+                String content = cadetService.setFreeEbashka(args);
+                yield new CommandResponse(content);
+            }
+            case "/setebashka" -> {
+                String content = cadetService.setNotFreeEbashka(args);
+                yield new CommandResponse(content);
+            }
+            default -> new CommandResponse("Що ти блять написало?");
         };
     }
 }

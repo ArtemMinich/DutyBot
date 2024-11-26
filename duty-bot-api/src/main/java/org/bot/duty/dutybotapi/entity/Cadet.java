@@ -2,9 +2,12 @@ package org.bot.duty.dutybotapi.entity;
 
 import jakarta.persistence.*;
 import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 
 @Entity
-@Data
+@Getter
+@Setter
 public class Cadet {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

@@ -1,0 +1,33 @@
+services:
+  duty-api:
+    build:
+      context: ./duty-bot-api
+      dockerfile: Dockerfile
+      target: build-stage
+    container_name: duty-api
+    environment:
+      SERVER_PORT: ${SERVER_PORT}
+      BD_HOST: database
+      BD_PORT: ${BD_PORT}
+      BD_USERNAME: ${BD_USERNAME}
+      BD_PASSWORD: ${BD_PASSWORD}
+      BD_NAME: ${BD_NAME}
+    ports:
+      - "${SERVER_PORT}:8080"
+    restart: unless-stopped
+
+  duty-bot:
+    build:
+      context: ./duty-bot
+      dockerfile: Dockerfile
+      target: run-stage
+    container_name: duty-bot
+    environment:
+      BOT_TOKEN: ${BOT_TOKEN}
+      API_URL: ${API_URL}
+      ALLOWED_IDS: ${ALLOWED_IDS}
+    ports:
+      - "3000:3000"
+    depends_on:
+      - duty-api
+    restart: unless-stopped

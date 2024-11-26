@@ -33,3 +33,5 @@ build/
 .vscode/
 
 /duty-bot/.env
+.env
+init.sql
