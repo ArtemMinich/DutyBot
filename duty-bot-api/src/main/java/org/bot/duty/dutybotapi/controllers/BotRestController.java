@@ -54,4 +54,9 @@ public class BotRestController {
         List<Integer> cadetsIds = cadetService.getIdsCadetsByStatus(status);
         return new CadetsDto(cadetsIds.size(), cadetsIds) ;
     }
+
+    @GetMapping("/cadets/{id}")
+    public String getFreeCadets(@PathVariable("id") Long id) {
+        return cadetService.getCadetById(id);
+    }
 }

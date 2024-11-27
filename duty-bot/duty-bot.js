@@ -86,13 +86,10 @@ bot.on('callback_query', async (query) =>  {
             const cadetsIds = await getCadets(false)
             bot.sendMessage(chatId, `Оберіть кількість людей:`, countMenu(data,cadetsIds.size));     
         }else if(data == '/freeebashka'){
-            sendRequest(chatId, '/allebashka',"");
             bot.sendMessage(chatId, `Оберіть номер курсанта:`, cadetMenu(data,await getCadets(true)));     
         }else if(data == '/setebashka'){
-            sendRequest(chatId, '/allebashka',"");
-                bot.sendMessage(chatId, `Оберіть номер курсанта:`, cadetMenu(data,await getCadets(false)));     
+            bot.sendMessage(chatId, `Оберіть номер курсанта:`, cadetMenu(data,await getCadets(false)));     
         }else{
-            sendRequest(chatId, '/allebashka',"");
             bot.sendMessage(chatId, `Оберіть номер курсанта:`, countMenu(data,11));     
         }
         

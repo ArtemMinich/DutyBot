@@ -47,7 +47,7 @@ public class CadetService {
             Cadet cadet = getCadetFromArgs(args);
             cadet.setEbashkaCount(cadet.getEbashkaCount() + 1);
             cadetRepository.save(cadet);
-            return getAllEbashkaCadets();
+            return getCadetById(cadet.getId());
         } catch (IllegalArgumentException | EntityNotFoundException e){
             return e.getMessage();
         }
@@ -59,7 +59,7 @@ public class CadetService {
             Cadet cadet = getCadetFromArgs(args);
             cadet.setEbashkaCount(cadet.getEbashkaCount() - 1);
             cadetRepository.save(cadet);
-            return getAllEbashkaCadets();
+            return getCadetById(cadet.getId());
         } catch (IllegalArgumentException | EntityNotFoundException e){
             return e.getMessage();
         }
@@ -70,7 +70,7 @@ public class CadetService {
             Cadet cadet = getCadetFromArgs(args);
             cadet.setEbashkaStatus(false);
             cadetRepository.save(cadet);
-            return getAllEbashkaCadets();
+            return getCadetById(cadet.getId());
         } catch (IllegalArgumentException | EntityNotFoundException e){
             return e.getMessage();
         }
@@ -81,7 +81,7 @@ public class CadetService {
             Cadet cadet = getCadetFromArgs(args);
             cadet.setEbashkaStatus(true);
             cadetRepository.save(cadet);
-            return getAllEbashkaCadets();
+            return getCadetById(cadet.getId());
         } catch (IllegalArgumentException | EntityNotFoundException e){
             return e.getMessage();
         }
@@ -121,4 +121,9 @@ public class CadetService {
                 .toList();
     }
 
+    public String getCadetById(Long id) {
+        return cadetRepository.findById(id)
+                .map(c-> String.format("%d.%s: %d - %s",c.getId(), c.getLastName(),c.getEbashkaCount(), c.isEbashkaStatus()?"⛔️":"✅"))
+                .orElse(null);
+    }
 }
