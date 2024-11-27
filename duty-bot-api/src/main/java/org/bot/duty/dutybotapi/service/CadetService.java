@@ -16,6 +16,8 @@ public class CadetService {
 
     private CadetRepository cadetRepository;
 
+    private EbashkaService ebashkaService;
+
     public String giveEbashkaCadets(String args) {
         if(canNotParseToInt(args)) {
             return "Введіть правильні дані";
@@ -32,8 +34,9 @@ public class CadetService {
                 .filter(c->!c.isEbashkaStatus())
                 .limit(numberCadets)
                 .toList();
-
-        return String.join(", ", addEbashkaCadets(ebashkaCadets));
+        String ebashkaList = String.join(", ", addEbashkaCadets(ebashkaCadets));
+        ebashkaService.save(ebashkaList);
+        return ebashkaList;
     }
 
     public String getAllEbashkaCadets() {
@@ -47,7 +50,9 @@ public class CadetService {
             Cadet cadet = getCadetFromArgs(args);
             cadet.setEbashkaCount(cadet.getEbashkaCount() + 1);
             cadetRepository.save(cadet);
-            return String.format("Додано єбашку: %s", getCadetById(cadet.getId()));
+            String cadets = String.format("Додано єбашку: %s", getCadetById(cadet.getId()));
+            ebashkaService.save(cadets);
+            return cadets;
         } catch (IllegalArgumentException | EntityNotFoundException e){
             return e.getMessage();
         }

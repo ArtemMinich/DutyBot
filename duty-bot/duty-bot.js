@@ -77,8 +77,9 @@ bot.onText(/\/start/, (msg) => {
 bot.on('callback_query', async (query) =>  {
     const chatId = query.message.chat.id;
     const data = query.data;
+    const userId = query.from.id;
     console.log(`${chatId} - ${data}`)
-    if (data.startsWith('/') && ALLOWED_IDS.includes(chatId.toString()) && data.indexOf('_') == -1) {
+    if (data.startsWith('/') && ALLOWED_IDS.includes(chatId.toString()) && ALLOWED_IDS.includes(userId.toString()) && data.indexOf('_') == -1) {
         if(data == '/allebashka'){
             sendRequest(chatId, data,"");
         } else if(data == '/giveebashka'){
