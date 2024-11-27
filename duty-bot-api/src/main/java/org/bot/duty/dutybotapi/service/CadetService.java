@@ -47,7 +47,7 @@ public class CadetService {
             Cadet cadet = getCadetFromArgs(args);
             cadet.setEbashkaCount(cadet.getEbashkaCount() + 1);
             cadetRepository.save(cadet);
-            return getCadetById(cadet.getId());
+            return String.format("Додано єбашку: %s", getCadetById(cadet.getId()));
         } catch (IllegalArgumentException | EntityNotFoundException e){
             return e.getMessage();
         }
@@ -59,7 +59,7 @@ public class CadetService {
             Cadet cadet = getCadetFromArgs(args);
             cadet.setEbashkaCount(cadet.getEbashkaCount() - 1);
             cadetRepository.save(cadet);
-            return getCadetById(cadet.getId());
+            return String.format("Відняли єбашку: %s", getCadetById(cadet.getId()));
         } catch (IllegalArgumentException | EntityNotFoundException e){
             return e.getMessage();
         }
@@ -70,7 +70,7 @@ public class CadetService {
             Cadet cadet = getCadetFromArgs(args);
             cadet.setEbashkaStatus(false);
             cadetRepository.save(cadet);
-            return getCadetById(cadet.getId());
+            return String.format("Прийшов з єбашки: %s", getCadetById(cadet.getId()));
         } catch (IllegalArgumentException | EntityNotFoundException e){
             return e.getMessage();
         }
@@ -81,7 +81,7 @@ public class CadetService {
             Cadet cadet = getCadetFromArgs(args);
             cadet.setEbashkaStatus(true);
             cadetRepository.save(cadet);
-            return getCadetById(cadet.getId());
+            return String.format("Відправили на єбашку: %s", getCadetById(cadet.getId()));
         } catch (IllegalArgumentException | EntityNotFoundException e){
             return e.getMessage();
         }
