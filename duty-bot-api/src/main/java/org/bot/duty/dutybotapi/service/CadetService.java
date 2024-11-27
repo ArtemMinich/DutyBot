@@ -115,14 +115,10 @@ public class CadetService {
        return cadets.stream().map(Cadet::getLastName).toList();
     }
 
-
-    public Integer getNumFreeCadets() {
-        return cadetRepository.findAllByEbashkaStatus(false).size();
-    }
-
-    public List<Integer> getIdsFreeCadets() {
-        return cadetRepository.findAllByEbashkaStatus(false).stream()
+    public List<Integer> getIdsCadetsByStatus(boolean status) {
+        return cadetRepository.findAllByEbashkaStatus(status).stream()
                 .map(Cadet::getId).map(l -> Integer.parseInt(l.toString()))
                 .toList();
     }
+
 }

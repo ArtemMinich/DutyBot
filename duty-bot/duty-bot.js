@@ -21,10 +21,18 @@ const mainMenu = {
     },
 };
 
-const cadetMenu = (command,cadetsFree) => ({
+const cadetMenu = (command,cadetIds) => ({
     reply_markup: {
-        inline_keyboard: Array.from({ length: cadetsFree.numFreeCadets }, (_, i) => [
-            { text: `${cadetsFree.idsFreeCadets[i]}`, callback_data: `${command}_${cadetsFree.idsFreeCadets[i]}` },
+        inline_keyboard: Array.from({ length: cadetIds.size }, (_, i) => [
+            { text: `${cadetIds.list[i]}`, callback_data: `${command}_${cadetIds.list[i]}` },
+        ]),
+    },
+});
+
+const countMenu = (command,numOfCadets) => ({
+    reply_markup: {
+        inline_keyboard: Array.from({ length: numOfCadets }, (_, i) => [
+            { text: `${i + 1}`, callback_data: `${command}_${i + 1}` },
         ]),
     },
 });
@@ -48,10 +56,11 @@ const sendRequest = async (chatId,command,args)=>{
     }
 }
 
-const getFreeCadets = async ()=>{
+
+const getCadets = async (status)=>{
     try {
-        const response = await axios.get(`${API_URL}/free-cadets`);
-        return response.data
+        const response = await axios.get(`${API_URL}/cadets?status=${status}`);
+        return response.data;
     } catch (error) {
         console.error('Помилка запиту:', error.message);
         bot.sendMessage(chatId, 'Помилка виконання команди.');
@@ -65,22 +74,26 @@ bot.onText(/\/start/, (msg) => {
 
 
 
-bot.on('callback_query', (query) => {
+bot.on('callback_query', async (query) =>  {
     const chatId = query.message.chat.id;
     const data = query.data;
     console.log(`${chatId} - ${data}`)
-
     if (data.startsWith('/') && ALLOWED_IDS.includes(chatId.toString()) && data.indexOf('_') == -1) {
         if(data == '/allebashka'){
             sendRequest(chatId, data,"");
         } else if(data == '/giveebashka'){
-            const command = data;
             sendRequest(chatId, '/allebashka',"");
-            bot.sendMessage(chatId, `Оберіть кількість людей:`, cadetMenu(command, getFreeCadets()));     
+            const cadetsIds = await getCadets(false)
+            bot.sendMessage(chatId, `Оберіть кількість людей:`, countMenu(data,cadetsIds.size));     
+        }else if(data == '/freeebashka'){
+            sendRequest(chatId, '/allebashka',"");
+            bot.sendMessage(chatId, `Оберіть номер курсанта:`, cadetMenu(data,await getCadets(true)));     
+        }else if(data == '/setebashka'){
+            sendRequest(chatId, '/allebashka',"");
+                bot.sendMessage(chatId, `Оберіть номер курсанта:`, cadetMenu(data,await getCadets(false)));     
         }else{
-            const command = data;
             sendRequest(chatId, '/allebashka',"");
-            bot.sendMessage(chatId, `Оберіть номер курсанта:`, cadetMenu(command, getFreeCadets()));     
+            bot.sendMessage(chatId, `Оберіть номер курсанта:`, countMenu(data,11));     
         }
         
     }

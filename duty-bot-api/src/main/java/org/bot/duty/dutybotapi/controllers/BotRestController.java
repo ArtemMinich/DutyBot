@@ -1,11 +1,13 @@
 package org.bot.duty.dutybotapi.controllers;
 
 import lombok.AllArgsConstructor;
+import org.bot.duty.dutybotapi.dto.CadetsDto;
 import org.bot.duty.dutybotapi.dto.CommandRequestDto;
 import org.bot.duty.dutybotapi.dto.CommandResponseDto;
-import org.bot.duty.dutybotapi.dto.FreeCadetsDto;
 import org.bot.duty.dutybotapi.service.CadetService;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("/api/v1")
@@ -47,8 +49,9 @@ public class BotRestController {
         };
     }
 
-    @GetMapping("/free-cadets")
-    public FreeCadetsDto getFreeCadets() {
-        return new FreeCadetsDto(cadetService.getNumFreeCadets(), cadetService.getIdsFreeCadets());
+    @GetMapping("/cadets")
+    public CadetsDto getFreeCadets(@RequestParam(defaultValue = "true") Boolean status) {
+        List<Integer> cadetsIds = cadetService.getIdsCadetsByStatus(status);
+        return new CadetsDto(cadetsIds.size(), cadetsIds) ;
     }
 }
