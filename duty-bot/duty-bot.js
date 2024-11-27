@@ -21,10 +21,10 @@ const mainMenu = {
     },
 };
 
-const cadetMenu = (command) => ({
+const cadetMenu = (command,cadetsFree) => ({
     reply_markup: {
-        inline_keyboard: Array.from({ length: 11 }, (_, i) => [
-            { text: `${i + 1}`, callback_data: `${command}_${i + 1}` },
+        inline_keyboard: Array.from({ length: cadetsFree.numFreeCadets }, (_, i) => [
+            { text: `${cadetsFree.idsFreeCadets[i]}`, callback_data: `${command}_${cadetsFree.idsFreeCadets[i]}` },
         ]),
     },
 });
@@ -42,6 +42,16 @@ const sendRequest = async (chatId,command,args)=>{
         } else{
             bot.sendMessage(chatId, `Немає даних`);
         }
+    } catch (error) {
+        console.error('Помилка запиту:', error.message);
+        bot.sendMessage(chatId, 'Помилка виконання команди.');
+    }
+}
+
+const getFreeCadets = async ()=>{
+    try {
+        const response = await axios.get(`${API_URL}/free-cadets`);
+        return response.data
     } catch (error) {
         console.error('Помилка запиту:', error.message);
         bot.sendMessage(chatId, 'Помилка виконання команди.');
@@ -66,11 +76,11 @@ bot.on('callback_query', (query) => {
         } else if(data == '/giveebashka'){
             const command = data;
             sendRequest(chatId, '/allebashka',"");
-            bot.sendMessage(chatId, `Оберіть кількість людей:`, cadetMenu(command));     
+            bot.sendMessage(chatId, `Оберіть кількість людей:`, cadetMenu(command, getFreeCadets()));     
         }else{
             const command = data;
             sendRequest(chatId, '/allebashka',"");
-            bot.sendMessage(chatId, `Оберіть номер курсанта:`, cadetMenu(command));     
+            bot.sendMessage(chatId, `Оберіть номер курсанта:`, cadetMenu(command, getFreeCadets()));     
         }
         
     }

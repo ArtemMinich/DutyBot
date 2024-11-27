@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.Comparator;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @AllArgsConstructor
@@ -115,5 +116,13 @@ public class CadetService {
     }
 
 
+    public Integer getNumFreeCadets() {
+        return cadetRepository.findAllByEbashkaStatus(false).size();
+    }
 
+    public List<Integer> getIdsFreeCadets() {
+        return cadetRepository.findAllByEbashkaStatus(false).stream()
+                .map(Cadet::getId).map(l -> Integer.parseInt(l.toString()))
+                .toList();
+    }
 }
