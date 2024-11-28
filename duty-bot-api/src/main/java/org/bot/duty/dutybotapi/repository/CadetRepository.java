@@ -11,5 +11,5 @@ import java.util.List;
 public interface CadetRepository extends JpaRepository<Cadet, Long> {
     List<Cadet> findAllByEbashkaStatus(boolean b);
 
-    List<Cadet> findByUpdatedAtBefore(LocalDateTime time);
+    List<Cadet> findByUpdatedAtBeforeAndEbashkaStatus(LocalDateTime time, boolean status);
 }

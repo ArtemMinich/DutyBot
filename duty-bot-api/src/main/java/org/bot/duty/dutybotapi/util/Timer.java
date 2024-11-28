@@ -19,7 +19,7 @@ public class Timer {
     public void updateFieldsAfterEightHours() {
         LocalDateTime eightHoursAgo = LocalDateTime.now().minusHours(8);
 
-        List<Cadet> recordsToUpdate = cadetRepository.findByUpdatedAtBefore(eightHoursAgo);
+        List<Cadet> recordsToUpdate = cadetRepository.findByUpdatedAtBeforeAndEbashkaStatus(eightHoursAgo,true);
 
         recordsToUpdate.forEach(cadet -> {
             cadet.setUpdatedAt(LocalDateTime.now());
