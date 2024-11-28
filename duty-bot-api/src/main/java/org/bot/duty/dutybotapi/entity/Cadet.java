@@ -1,9 +1,11 @@
 package org.bot.duty.dutybotapi.entity;
 
 import jakarta.persistence.*;
-import lombok.Data;
 import lombok.Getter;
 import lombok.Setter;
+import org.hibernate.annotations.UpdateTimestamp;
+
+import java.time.LocalDateTime;
 
 @Entity
 @Getter
@@ -30,4 +32,8 @@ public class Cadet {
 
     @Column(nullable = false)
     private boolean ebashkaStatus;
+
+    @Column(name = "updated_at")
+    @UpdateTimestamp
+    private LocalDateTime updatedAt;
 }

@@ -37,7 +37,7 @@ const countMenu = (command,numOfCadets) => ({
     },
 });
 
-const sendRequest = async (chatId,command,args)=>{
+const doCommand = async (chatId,command,args)=>{
     try {
         const response = await axios.post(`${API_URL}/command`, {
             command: command,
@@ -81,9 +81,9 @@ bot.on('callback_query', async (query) =>  {
     console.log(`${chatId} - ${data}`)
     if (data.startsWith('/') && ALLOWED_IDS.includes(chatId.toString()) && ALLOWED_IDS.includes(userId.toString()) && data.indexOf('_') == -1) {
         if(data == '/allebashka'){
-            sendRequest(chatId, data,"");
-        } else if(data == '/giveebashka'){
-            sendRequest(chatId, '/allebashka',"");
+            doCommand(chatId, data,"");
+        } else if(data == '/giveebashka'){  
+            doCommand(chatId, '/allebashka',"");
             const cadetsIds = await getCadets(false)
             bot.sendMessage(chatId, `Оберіть кількість людей:`, countMenu(data,cadetsIds.size));     
         }else if(data == '/freeebashka'){
@@ -93,12 +93,11 @@ bot.on('callback_query', async (query) =>  {
         }else{
             bot.sendMessage(chatId, `Оберіть номер курсанта:`, countMenu(data,11));     
         }
-        
     }
 
     if (data.indexOf('_') != -1) {
         const [command, args] = data.split('_');
-        sendRequest(chatId, command,args)
+        doCommand(chatId, command,args)
     }
 });
 
