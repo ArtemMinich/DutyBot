@@ -12,6 +12,6 @@ public class EbashkaService {
     private final EbashkaRepository ebashkaRepository;
 
     public void save(String ebashkaList) {
-        ebashkaRepository.save(new Ebashka(ebashkaList));
+        ebashkaRepository.save(null);
     }
 }
