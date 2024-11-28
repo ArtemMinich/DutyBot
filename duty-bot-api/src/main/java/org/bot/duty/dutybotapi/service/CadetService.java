@@ -35,7 +35,7 @@ public class CadetService {
                 .limit(numberCadets)
                 .toList();
         String ebashkaList = String.join(", ", addEbashkaCadets(ebashkaCadets));
-//        ebashkaService.save(ebashkaList);
+        ebashkaService.save(ebashkaList);
         return ebashkaList;
     }
 
@@ -51,7 +51,7 @@ public class CadetService {
             cadet.setEbashkaCount(cadet.getEbashkaCount() + 1);
             cadetRepository.save(cadet);
             String cadets = String.format("Додано єбашку: %s", getCadetById(cadet.getId()));
-//            ebashkaService.save(cadets);
+            ebashkaService.save(cadets);
             return cadets;
         } catch (IllegalArgumentException | EntityNotFoundException e){
             return e.getMessage();

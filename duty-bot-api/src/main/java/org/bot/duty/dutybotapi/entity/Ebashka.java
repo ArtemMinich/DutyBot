@@ -26,4 +26,10 @@ public class Ebashka {
     @Column(name = "updated_at")
     @UpdateTimestamp
     private LocalDateTime updatedAt;
+
+    public Ebashka(String cadets) {
+        this.cadets = cadets;
+        createdAt = LocalDateTime.now();
+        updatedAt = LocalDateTime.now();
+    }
 }
