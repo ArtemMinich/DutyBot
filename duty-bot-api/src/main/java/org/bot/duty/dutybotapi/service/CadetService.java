@@ -86,6 +86,7 @@ public class CadetService {
         try {
             Cadet cadet = getCadetFromArgs(args);
             cadet.setEbashkaStatus(true);
+            cadet.setUpdatedAt(LocalDateTime.now());
             cadetRepository.save(cadet);
             return String.format("Відправили на єбашку: %s", getCadetById(cadet.getId()));
         } catch (IllegalArgumentException | EntityNotFoundException e) {
