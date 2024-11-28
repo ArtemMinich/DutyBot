@@ -12,4 +12,6 @@ public interface CadetRepository extends JpaRepository<Cadet, Long> {
     List<Cadet> findAllByEbashkaStatus(boolean b);
 
     List<Cadet> findByUpdatedAtBeforeAndEbashkaStatus(LocalDateTime time, boolean status);
+
+    Cadet findByChatId(String chatId);
 }

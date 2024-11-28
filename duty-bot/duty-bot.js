@@ -37,13 +37,27 @@ const countMenu = (command,numOfCadets) => ({
     },
 });
 
-const doCommand = async (chatId,command,args)=>{
+const getLastName = async (chatId)=>{
+    try {
+    
+        const response = await axios.post(`${API_URL}/cadets/lastname`, {
+            chatId: chatId,
+        });
+        return response.data;
+    } catch (error) {
+        console.error('Помилка запиту:', error.message);
+        bot.sendMessage(chatId, 'Помилка виконання команди.');
+    }
+}
+
+const doCommand = async (userId,chatId,command,args)=>{
     try {
         const response = await axios.post(`${API_URL}/command`, {
             command: command,
             args: args
         });
-        console.log(`${chatId} send command: ${command} with args: ${args} status: ${response.status}`);
+        const lastName = await getLastName(userId)
+        console.log(`${lastName} send command: ${command} with args: ${args}`);
         const content = response.data.content
         if(content && content.trim() !== ''){
             bot.sendMessage(chatId, `${content}`);
@@ -72,18 +86,15 @@ bot.onText(/\/start/, (msg) => {
     bot.sendMessage(chatId, 'Оберіть дію:', mainMenu);
 });
 
-
-
 bot.on('callback_query', async (query) =>  {
     const chatId = query.message.chat.id;
     const data = query.data;
     const userId = query.from.id;
-    console.log(`${chatId} - ${data}`)
     if (data.startsWith('/') && ALLOWED_IDS.includes(chatId.toString()) && ALLOWED_IDS.includes(userId.toString()) && data.indexOf('_') == -1) {
         if(data == '/allebashka'){
-            doCommand(chatId, data,"");
+            doCommand(userId,chatId, data,"");
         } else if(data == '/giveebashka'){  
-            doCommand(chatId, '/allebashka',"");
+            doCommand(userId, chatId, '/allebashka',"");
             const cadetsIds = await getCadets(false)
             bot.sendMessage(chatId, `Оберіть кількість людей:`, countMenu(data,cadetsIds.size));     
         }else if(data == '/freeebashka'){
@@ -97,7 +108,7 @@ bot.on('callback_query', async (query) =>  {
 
     if (data.indexOf('_') != -1) {
         const [command, args] = data.split('_');
-        doCommand(chatId, command,args)
+        doCommand(userId, chatId, command,args)
     }
 });
 
