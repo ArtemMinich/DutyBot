@@ -2,7 +2,6 @@ package org.bot.duty.dutybotapi.controllers;
 
 import lombok.AllArgsConstructor;
 import org.bot.duty.dutybotapi.dto.CadetsDto;
-import org.bot.duty.dutybotapi.dto.ChatIdDto;
 import org.bot.duty.dutybotapi.dto.CommandRequestDto;
 import org.bot.duty.dutybotapi.dto.CommandResponseDto;
 import org.bot.duty.dutybotapi.service.CadetService;
@@ -59,10 +58,5 @@ public class BotRestController {
     @GetMapping("/cadets/{id}")
     public String getFreeCadets(@PathVariable("id") Long id) {
         return cadetService.getCadetById(id);
-    }
-
-    @PostMapping("/cadets/lastname")
-    public String getCadetLastName(@RequestBody ChatIdDto chatIdDto) {
-        return cadetService.getCadetLastNameByChatId(chatIdDto.chatId());
     }
 }

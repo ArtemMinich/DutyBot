@@ -37,27 +37,13 @@ const countMenu = (command,numOfCadets) => ({
     },
 });
 
-const getLastName = async (chatId)=>{
-    try {
-    
-        const response = await axios.post(`${API_URL}/cadets/lastname`, {
-            chatId: chatId,
-        });
-        return response.data;
-    } catch (error) {
-        console.error('Помилка запиту:', error.message);
-        bot.sendMessage(chatId, 'Помилка виконання команди.');
-    }
-}
-
-const doCommand = async (userId,chatId,command,args)=>{
+const doCommand = async (chatId,command,args)=>{
     try {
         const response = await axios.post(`${API_URL}/command`, {
             command: command,
             args: args
         });
-        const lastName = await getLastName(userId)
-        console.log(`${lastName} send command: ${command} with args: ${args}`);
+        console.log(`${chatId} send command: ${command} with args: ${args}`);
         const content = response.data.content
         if(content && content.trim() !== ''){
             bot.sendMessage(chatId, `${content}`);

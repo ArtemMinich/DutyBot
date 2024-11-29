@@ -134,10 +134,4 @@ public class CadetService {
                 .map(c -> String.format("%d.%s: %d - %s", c.getId(), c.getLastName(), c.getEbashkaCount(), c.isEbashkaStatus() ? "⛔️" : "✅"))
                 .orElse(null);
     }
-
-    public String getCadetLastNameByChatId(String chatId) {
-        Cadet cadet = cadetRepository.findByChatId(chatId);
-        if (cadet == null) return "Невідомий";
-        return cadet.getLastName();
-    }
 }
