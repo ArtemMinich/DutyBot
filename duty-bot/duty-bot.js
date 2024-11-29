@@ -78,9 +78,9 @@ bot.on('callback_query', async (query) =>  {
     const userId = query.from.id;
     if (data.startsWith('/') && ALLOWED_IDS.includes(chatId.toString()) && ALLOWED_IDS.includes(userId.toString()) && data.indexOf('_') == -1) {
         if(data == '/allebashka'){
-            doCommand(userId,chatId, data,"");
+            doCommand(chatId, data,"");
         } else if(data == '/giveebashka'){  
-            doCommand(userId, chatId, '/allebashka',"");
+            doCommand(chatId, '/allebashka',"");
             const cadetsIds = await getCadets(false)
             bot.sendMessage(chatId, `Оберіть кількість людей:`, countMenu(data,cadetsIds.size));     
         }else if(data == '/freeebashka'){
@@ -94,7 +94,7 @@ bot.on('callback_query', async (query) =>  {
 
     if (data.indexOf('_') != -1) {
         const [command, args] = data.split('_');
-        doCommand(userId, chatId, command,args)
+        doCommand(chatId, command,args)
     }
 });
 
