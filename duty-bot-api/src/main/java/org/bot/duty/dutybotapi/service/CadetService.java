@@ -51,7 +51,7 @@ public class CadetService {
             cadet.setEbashkaCount(cadet.getEbashkaCount() + 1);
             cadetRepository.save(cadet);
             String cadets = String.format("Додано єбашку: %s", getCadetById(cadet.getId()));
-            ebashkaService.save(cadets);
+            ebashkaService.save(cadet.getLastName());
             return cadets;
         } catch (IllegalArgumentException | EntityNotFoundException e) {
             return e.getMessage();
