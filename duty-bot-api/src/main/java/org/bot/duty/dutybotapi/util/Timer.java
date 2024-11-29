@@ -18,11 +18,7 @@ public class Timer {
     @Scheduled(fixedRate = 60000)
     public void updateFieldsAfterEightHours() {
         LocalDateTime eightHoursAgo = LocalDateTime.now().minusHours(8);
-        System.out.println("Checking not free cadets...");
         List<Cadet> recordsToUpdate = cadetRepository.findByUpdatedAtBeforeAndEbashkaStatus(eightHoursAgo,true);
-        if (recordsToUpdate.isEmpty()) {
-            System.out.println("No cadets found");
-        }
         recordsToUpdate.forEach(cadet -> {
             cadet.setUpdatedAt(LocalDateTime.now());
             cadet.setEbashkaStatus(false);
