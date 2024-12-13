@@ -12,11 +12,11 @@ const mainMenu = {
     reply_markup: {
         inline_keyboard: [
             [{ text: 'Дати людей на єбашку 🤤', callback_data: '/giveebashka' }],
-            [{ text: 'Список кількості робіт 📋', callback_data: '/allebashka' }],
+            [{ text: 'Список кількості єбашок 📋', callback_data: '/allebashka' }],
             [{ text: 'Добавляє 1 єбашку ➕', callback_data: '/addebashka' }],
             [{ text: 'Видаляє 1 єбашку ➖', callback_data: '/removeebashka' }],
-            [{ text: 'Звільніє людину від єбашкі ✅', callback_data: '/freeebashka' }],
-            [{ text: 'Ставить людину на єбашку ⛔️', callback_data: '/setebashka' }],
+            [{ text: 'Звільніє від єбашкі ✅', callback_data: '/freeebashka' }],
+            [{ text: 'Ставить на єбашку ⛔️', callback_data: '/setebashka' }],
         ],
     },
 };
