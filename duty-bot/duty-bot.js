@@ -93,7 +93,7 @@ bot.on('callback_query', async (query) =>  {
         }else if(data == '/setebashka'){
             bot.sendMessage(chatId, `Оберіть курсанта:`, cadetMenu(data,await getCadets(false)));     
         }else{
-            bot.sendMessage(chatId, `Оберіть курсанта:`, countMenu(data,await getCadets()));     
+            bot.sendMessage(chatId, `Оберіть курсанта:`, countcadetMenuMenu(data,await getCadets()));     
         }
     }
 
