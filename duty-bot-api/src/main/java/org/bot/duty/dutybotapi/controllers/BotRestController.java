@@ -52,8 +52,8 @@ public class BotRestController {
     }
 
     @GetMapping("/cadets")
-    public CadetsDto getFreeCadets(@RequestParam(defaultValue = "true") Boolean status) {
-        List<Cadet> cadets = cadetService.getIdsCadetsByStatus(status);
+    public CadetsDto getFreeCadets(@RequestParam Boolean status) {
+        List<Cadet> cadets = status==null?cadetService.getAllCadets():cadetService.getIdsCadetsByStatus(status);
         return new CadetsDto(cadets.size(),
                 cadets.stream()
                         .map(c->c.getId().intValue()).toList(),

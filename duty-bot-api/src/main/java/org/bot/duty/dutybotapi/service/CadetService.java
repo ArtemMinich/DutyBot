@@ -132,4 +132,8 @@ public class CadetService {
                 .map(c -> String.format("%d.%s: %d - %s", c.getId(), c.getLastName(), c.getEbashkaCount(), c.isEbashkaStatus() ? "⛔️" : "✅"))
                 .orElse(null);
     }
+
+    public List<Cadet> getAllCadets() {
+        return cadetRepository.findAll();
+    }
 }
