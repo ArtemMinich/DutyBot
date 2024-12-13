@@ -15,7 +15,7 @@ const mainMenu = {
             [{ text: 'Список кількості єбашок 📋', callback_data: '/allebashka' }],
             [{ text: 'Добавляє 1 єбашку ➕', callback_data: '/addebashka' }],
             [{ text: 'Видаляє 1 єбашку ➖', callback_data: '/removeebashka' }],
-            [{ text: 'Звільніє від єбашкі ✅', callback_data: '/freeebashka' }],
+            [{ text: 'Звільняє від єбашкі ✅', callback_data: '/freeebashka' }],
             [{ text: 'Ставить на єбашку ⛔️', callback_data: '/setebashka' }],
         ],
     },
