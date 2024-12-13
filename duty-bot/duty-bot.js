@@ -67,10 +67,8 @@ const getCadets = async (status)=>{
             const response = await axios.get(`${API_URL}/cadets`);
             return response.data;
         }
-        
     } catch (error) {
         console.error('Помилка запиту:', error.message);
-        bot.sendMessage(chatId, 'Помилка виконання команди.');
     }
 }
 

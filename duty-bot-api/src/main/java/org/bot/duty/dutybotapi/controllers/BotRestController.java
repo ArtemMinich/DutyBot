@@ -52,7 +52,7 @@ public class BotRestController {
     }
 
     @GetMapping("/cadets")
-    public CadetsDto getFreeCadets(@RequestParam Boolean status) {
+    public CadetsDto getFreeCadets(@RequestParam(required = false) Boolean status) {
         List<Cadet> cadets = status==null?cadetService.getAllCadets():cadetService.getIdsCadetsByStatus(status);
         return new CadetsDto(cadets.size(),
                 cadets.stream()
