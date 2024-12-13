@@ -13,10 +13,10 @@ const mainMenu = {
         inline_keyboard: [
             [{ text: 'Дати людей на єбашку', callback_data: '/giveebashka' }],
             [{ text: 'Список кількості робіт', callback_data: '/allebashka' }],
-            [{ text: 'Добавляє кількість єбашок для когось', callback_data: '/addebashka' }],
-            [{ text: 'Видаляє єбашку для когось', callback_data: '/removeebashka' }],
-            [{ text: 'Звільніє людину від єбашкі', callback_data: '/freeebashka' }],
-            [{ text: 'Ставить людині єбашку', callback_data: '/setebashka' }],
+            [{ text: 'Добавляє 1 єбашку (+)', callback_data: '/addebashka' }],
+            [{ text: 'Видаляє 1 єбашку (-)', callback_data: '/removeebashka' }],
+            [{ text: 'Звільніє людину від єбашкі (✅)', callback_data: '/freeebashka' }],
+            [{ text: 'Ставить людину на єбашку (⛔️)', callback_data: '/setebashka' }],
         ],
     },
 };
