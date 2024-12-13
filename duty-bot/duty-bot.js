@@ -24,7 +24,7 @@ const mainMenu = {
 const cadetMenu = (command,cadetIds) => ({
     reply_markup: {
         inline_keyboard: Array.from({ length: cadetIds.size }, (_, i) => [
-            { text: `${cadetIds.list[i]}`, callback_data: `${command}_${cadetIds.list[i]}` },
+            { text: `${cadetIds.lastnames[i]}`, callback_data: `${command}_${cadetIds.ids[i]}` },
         ]),
     },
 });

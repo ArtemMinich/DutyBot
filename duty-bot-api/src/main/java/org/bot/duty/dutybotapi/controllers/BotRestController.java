@@ -4,10 +4,12 @@ import lombok.AllArgsConstructor;
 import org.bot.duty.dutybotapi.dto.CadetsDto;
 import org.bot.duty.dutybotapi.dto.CommandRequestDto;
 import org.bot.duty.dutybotapi.dto.CommandResponseDto;
+import org.bot.duty.dutybotapi.entity.Cadet;
 import org.bot.duty.dutybotapi.service.CadetService;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/api/v1")
@@ -23,9 +25,9 @@ public class BotRestController {
         return switch (command) {
             case "/giveebashka" -> {
                 String content = cadetService.giveEbashkaCadets(args);
-                yield new CommandResponseDto(content.isEmpty()?"Немає людей":content);
+                yield new CommandResponseDto(content.isEmpty() ? "Немає людей" : content);
             }
-                case "/allebashka" -> {
+            case "/allebashka" -> {
                 String content = cadetService.getAllEbashkaCadets();
                 yield new CommandResponseDto(content);
             }
@@ -51,8 +53,12 @@ public class BotRestController {
 
     @GetMapping("/cadets")
     public CadetsDto getFreeCadets(@RequestParam(defaultValue = "true") Boolean status) {
-        List<Integer> cadetsIds = cadetService.getIdsCadetsByStatus(status);
-        return new CadetsDto(cadetsIds.size(), cadetsIds) ;
+        List<Cadet> cadets = cadetService.getIdsCadetsByStatus(status);
+        return new CadetsDto(cadets.size(),
+                cadets.stream()
+                        .map(c->c.getId().intValue()).toList(),
+                cadets.stream()
+                        .map(Cadet::getLastName).toList());
     }
 
     @GetMapping("/cadets/{id}")

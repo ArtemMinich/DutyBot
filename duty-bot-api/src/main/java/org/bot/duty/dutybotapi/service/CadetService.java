@@ -123,10 +123,8 @@ public class CadetService {
         return cadets.stream().map(Cadet::getLastName).toList();
     }
 
-    public List<Integer> getIdsCadetsByStatus(boolean status) {
-        return cadetRepository.findAllByEbashkaStatus(status).stream()
-                .map(Cadet::getId).map(l -> Integer.parseInt(l.toString()))
-                .toList();
+    public List<Cadet> getIdsCadetsByStatus(boolean status) {
+        return cadetRepository.findAllByEbashkaStatus(status).stream().toList();
     }
 
     public String getCadetById(Long id) {
