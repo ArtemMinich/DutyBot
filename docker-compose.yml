@@ -24,6 +24,7 @@ services:
       dockerfile: Dockerfile
     container_name: duty-bot
     environment:
+      TZ: Europe/Kyiv
       BOT_TOKEN: ${BOT_TOKEN}
       API_URL: ${API_URL}
       ALLOWED_IDS: ${ALLOWED_IDS}
