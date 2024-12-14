@@ -136,4 +136,8 @@ public class CadetService {
     public List<Cadet> getAllCadets() {
         return cadetRepository.findAll();
     }
+
+    public Cadet getCadetByChatId(String chatId) {
+        return cadetRepository.findByChatId(chatId).orElse(null);
+    }
 }

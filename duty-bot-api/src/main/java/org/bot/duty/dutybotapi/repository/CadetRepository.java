@@ -6,6 +6,7 @@ import org.springframework.stereotype.Repository;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
 
 @Repository
 public interface CadetRepository extends JpaRepository<Cadet, Long> {
@@ -13,4 +14,5 @@ public interface CadetRepository extends JpaRepository<Cadet, Long> {
 
     List<Cadet> findByUpdatedAtBeforeAndEbashkaStatus(LocalDateTime time, boolean status);
 
+    Optional<Cadet> findByChatId(String chatId);
 }

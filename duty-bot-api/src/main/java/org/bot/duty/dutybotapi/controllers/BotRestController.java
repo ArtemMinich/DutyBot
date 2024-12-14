@@ -4,12 +4,13 @@ import lombok.AllArgsConstructor;
 import org.bot.duty.dutybotapi.dto.CadetsDto;
 import org.bot.duty.dutybotapi.dto.CommandRequestDto;
 import org.bot.duty.dutybotapi.dto.CommandResponseDto;
+import org.bot.duty.dutybotapi.dto.PollResults;
 import org.bot.duty.dutybotapi.entity.Cadet;
 import org.bot.duty.dutybotapi.service.CadetService;
+import org.bot.duty.dutybotapi.service.PollService;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/api/v1")
@@ -17,6 +18,8 @@ import java.util.stream.Collectors;
 public class BotRestController {
 
     private CadetService cadetService;
+
+    private PollService pollService;
 
     @PostMapping("/command")
     public CommandResponseDto command(@RequestBody CommandRequestDto commandRequest) {
@@ -64,5 +67,10 @@ public class BotRestController {
     @GetMapping("/cadets/{id}")
     public String getFreeCadets(@PathVariable("id") Long id) {
         return cadetService.getCadetById(id);
+    }
+
+    @PostMapping("/poll")
+    public String receivePollResults(@RequestBody PollResults pollResults) {
+        return pollService.formatResults(pollResults);
     }
 }
