@@ -9,7 +9,7 @@ const bot = new TelegramBot(BOT_TOKEN, { polling: true });
 const API_URL = process.env.API_URL;
 const ALLOWED_IDS = process.env.ALLOWED_IDS ? process.env.ALLOWED_IDS.split(',') : [];
 
-// Єбашкі ////////////////////////////////////////
+// Голосування ////////////////////////////////////////
 
 const mainMenu = {
     reply_markup: {
@@ -109,14 +109,14 @@ bot.on('callback_query', async (query) =>  {
 // Голосування ////////////////////////////////////////
 
 const GROUP_ID = process.env.GROUP_ID
-const POLL_HOUR = process.env.POLL_HOUR
-const POLL_MINUTES = process.env.POLL_MINUTES
+const POLL_HOUR = process.env.POLL_HOUR || 16
+const POLL_MINUTES = process.env.POLL_MINUTES || 0
 const POLL_EXPIRETIME = process.env.POLL_EXPIRETIME
-const DAYS_OF_WEEK = process.env.DAYS_OF_WEEK ? process.env.DAYS_OF_WEEK.split(',') : []
+const DAYS_OF_WEEK = process.env.DAYS_OF_WEEK || 10
+  ? process.env.DAYS_OF_WEEK.split(',').map(day => parseInt(day))
+  : [];
 
 const questions = ['Как жизнь бродяга?'];
-
-const question = questions[Math.floor(Math.random() * questions.length)];
 const options = ["Магазин", "Пошта", "Парк", "Бігати"];
 
 let pollData = {
