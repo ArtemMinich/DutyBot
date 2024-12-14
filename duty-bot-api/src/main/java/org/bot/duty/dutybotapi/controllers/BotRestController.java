@@ -2,9 +2,10 @@ package org.bot.duty.dutybotapi.controllers;
 
 import lombok.AllArgsConstructor;
 import org.bot.duty.dutybotapi.dto.CadetsDto;
-import org.bot.duty.dutybotapi.dto.CommandRequestDto;
-import org.bot.duty.dutybotapi.dto.CommandResponseDto;
-import org.bot.duty.dutybotapi.dto.PollResults;
+import org.bot.duty.dutybotapi.dto.command.CommandRequestDto;
+import org.bot.duty.dutybotapi.dto.command.CommandResponseDto;
+import org.bot.duty.dutybotapi.dto.poll.PollOptionRequestDto;
+import org.bot.duty.dutybotapi.dto.poll.PollOptionResponseDto;
 import org.bot.duty.dutybotapi.entity.Cadet;
 import org.bot.duty.dutybotapi.service.CadetService;
 import org.bot.duty.dutybotapi.service.PollService;
@@ -70,7 +71,7 @@ public class BotRestController {
     }
 
     @PostMapping("/poll")
-    public String receivePollResults(@RequestBody PollResults pollResults) {
-        return pollService.formatResults(pollResults);
+    public PollOptionResponseDto receivePollResults(@RequestBody PollOptionRequestDto pollResult) {
+        return new PollOptionResponseDto(pollResult.option(),pollService.fromIdToLastname(pollResult.userIds()));
     }
 }

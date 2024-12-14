@@ -1,6 +1,7 @@
 require('dotenv').config();
 const TelegramBot = require('node-telegram-bot-api');
 const axios = require('axios');
+const schedule = require('node-schedule');
 
 const BOT_TOKEN = process.env.BOT_TOKEN;
 const bot = new TelegramBot(BOT_TOKEN, { polling: true });
@@ -8,7 +9,7 @@ const bot = new TelegramBot(BOT_TOKEN, { polling: true });
 const API_URL = process.env.API_URL;
 const ALLOWED_IDS = process.env.ALLOWED_IDS ? process.env.ALLOWED_IDS.split(',') : [];
 
-// Єбашкі ////////////////////////////////////////
+// Голосування ////////////////////////////////////////
 
 const mainMenu = {
     reply_markup: {
@@ -108,82 +109,89 @@ bot.on('callback_query', async (query) =>  {
 // Голосування ////////////////////////////////////////
 
 const GROUP_ID = process.env.GROUP_ID
+const POLL_HOUR = process.env.POLL_HOUR
+const POLL_MINUTES = process.env.POLL_MINUTES
+const POLL_EXPIRETIME = process.env.POLL_EXPIRETIME
+const DAYS_OF_WEEK = process.env.DAYS_OF_WEEK ? process.env.DAYS_OF_WEEK.split(',') : []
 
 const questions = ['Как жизнь бродяга?'];
 
 const question = questions[Math.floor(Math.random() * questions.length)];
 const options = ["Магазин", "Пошта", "Парк", "Бігати"];
 
-// Змінна для збереження даних голосування
 let pollData = {
   pollId: null,
-  votes: {}, // {userId: [вибрані_варіанти]}
+  votes: {}, 
 };
 
-// Функція для обробки голосів і створення мапи
+
 const collectPollData = async () => {
   if (!pollData.pollId) {
     bot.sendMessage(GROUP_ID, "Немає активного голосування для збору даних.");
     return;
   }
 
-  // Генерація мапи з результатами
-  const resultsMap = new Map();
-
-  options.forEach((option, index) => {
-    resultsMap.set(option, []); // Ініціалізація пустого масиву для кожного варіанта
-  });
-
-  Object.entries(pollData.votes).forEach(([userId, userChoices]) => {
-    userChoices.forEach((choiceIndex) => {
-      const option = options[choiceIndex];
-      resultsMap.get(option).push(userId); // Додаємо ID користувача до відповідного варіанта
-    });
-  });
-
-  // Форматування результатів для API
-  const resultsObj = {};
-  resultsMap.forEach((userIds, option) => {
-    resultsObj[option] = userIds;  // Створюємо об'єкт для передачі
-  });
-
-  // Відправка результатів на сервер через API
   try {
-    const response = await axios.post(`${API_URL}/poll`, resultsObj);
-    bot.sendMessage(GROUP_ID,response);
-    console.log("Результати успішно відправлено на API:", response.data);
-  } catch (error) {
-    console.error("Помилка при відправці результатів на API:", error.message);
-  }
+    
+    const results = options.map((option, index) => {
+      const userIds = Object.entries(pollData.votes)
+        .filter(([_, optionIds]) => optionIds.includes(index))
+        .map(([userId]) => userId);
 
-  // Очищення даних голосування
-  pollData = { pollId: null, votes: {} };
+      return { option, userIds };
+    });
+
+    
+    const responses = await Promise.all(
+      results.map(async (result) => {
+        const response = await axios.post(`${API_URL}/poll`, result);
+        return { option: result.option, lastNames: response.data.lastNames };
+      })
+    );
+
+    for (const response of responses) {
+      const message = `${response.option}:\n` +
+        (response.lastNames.length > 0
+          ? response.lastNames.join(', ')
+          : 'Ніхто');
+
+      await bot.sendMessage(GROUP_ID, message);
+    }
+
+  } catch (error) {
+    console.error("Помилка під час обробки голосування:", error.message);
+  } finally {
+    
+    pollData = { pollId: null, votes: {} };
+  }
 };
 
-// Розклад: щодня о 16:30, крім неділі
-const job = schedule.scheduleJob({ hour: 16, minute: 30, dayOfWeek: [1, 2, 3, 4, 5, 6] }, () => {
-  bot.sendPoll(chatId, question, options, {
-    is_anonymous: false, // Вимикаємо анонімність, щоб отримувати ID користувачів
+
+const job = schedule.scheduleJob({ hour: POLL_HOUR, minute: POLL_MINUTES, dayOfWeek: DAYS_OF_WEEK }, () => {
+  const question = questions[Math.floor(Math.random() * questions.length)];
+
+  bot.sendPoll(GROUP_ID, question, options, {
+    is_anonymous: false, 
   }).then((poll) => {
-    pollData.pollId = poll.poll.id; // Зберігаємо ID голосування
-    pollData.votes = {}; // Скидаємо попередні результати
+    pollData.pollId = poll.poll.id; 
+    pollData.votes = {}; 
 
     console.log("Голосування створено:", poll.poll.id);
 
-    // Запускаємо таймер на 10 хвилин для збору даних
+    
     setTimeout(() => {
       collectPollData();
-    }, 10 * 60 * 1000); // 10 хвилин
+    }, POLL_EXPIRETIME * 1000); 
   }).catch((error) => {
     console.error("Помилка надсилання голосування:", error.message);
   });
 });
 
-// Відстеження голосів
+
 bot.on('poll_answer', (pollAnswer) => {
   const { user, option_ids } = pollAnswer;
 
-  // Зберігаємо голоси користувача
+  
   pollData.votes[user.id] = option_ids;
   console.log(`Користувач ${user.id} проголосував за: ${option_ids}`);
 });

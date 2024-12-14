@@ -1,8 +1,11 @@
 package org.bot.duty.dutybotapi.service;
 
 import lombok.AllArgsConstructor;
-import org.bot.duty.dutybotapi.dto.PollResults;
+import org.bot.duty.dutybotapi.entity.Cadet;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @AllArgsConstructor
@@ -10,13 +13,10 @@ public class PollService {
 
     private CadetService cadetService;
 
-    public String formatResults(PollResults results) {
-        StringBuilder response = new StringBuilder();
-        response.append("Дозвольте:\n");
-        results.get().forEach((option, ids) -> {
-            response.append("   ").append(option).append("\n");
-            ids.forEach(id -> response.append("      - ").append(cadetService.getCadetByChatId(id.toString())));
-        });
-        return response.toString();
+    public List<String> fromIdToLastname(List<String> ids) {
+        return ids.stream()
+                .map(cadetService::getCadetByChatId)
+                .map(Cadet::getLastName)
+                .toList();
     }
 }
