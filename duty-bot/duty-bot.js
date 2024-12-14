@@ -9,7 +9,7 @@ const bot = new TelegramBot(BOT_TOKEN, { polling: true });
 const API_URL = process.env.API_URL;
 const ALLOWED_IDS = process.env.ALLOWED_IDS ? process.env.ALLOWED_IDS.split(',') : [];
 
-// Голосування ////////////////////////////////////////
+// Єбашкі ////////////////////////////////////////
 
 const mainMenu = {
     reply_markup: {

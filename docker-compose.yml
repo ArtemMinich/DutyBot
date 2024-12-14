@@ -27,6 +27,11 @@ services:
       BOT_TOKEN: ${BOT_TOKEN}
       API_URL: ${API_URL}
       ALLOWED_IDS: ${ALLOWED_IDS}
+      GROUP_ID: ${GROUP_ID}
+      POLL_HOUR: ${POLL_HOUR}
+      POLL_MINUTES: ${POLL_MINUTES}
+      POLL_EXPIRETIME: ${POLL_EXPIRETIME}
+      DAYS_OF_WEEK: ${DAYS_OF_WEEK}
     ports:
       - "3000:3000"
     depends_on:
