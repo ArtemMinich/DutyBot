@@ -38,7 +38,7 @@ services:
       - duty-api
     networks:
       - internal-duty-bot-network
-    restart: unless-stopped
+    restart: always
 
 networks:
   internal-duty-bot-network:
