@@ -200,7 +200,7 @@ bot.on('poll_answer', (pollAnswer) => {
 
 // Перевірка світла ////////////////////////////////////////
 
-let lastOffTimes = [];  // Для збереження попередніх даних
+let lastOffTimes;  // Для збереження попередніх даних
 const LIGHT_CHECK = process.env.LIGHT_CHECK || 1800
 
 // Функція для перевірки зміни часу відключень

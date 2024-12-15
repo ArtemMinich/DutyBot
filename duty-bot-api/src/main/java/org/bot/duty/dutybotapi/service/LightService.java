@@ -13,6 +13,7 @@ public class LightService {
     private final LightRepository lightRepository;
 
     public Light getLastLight() {
+        if (lightRepository.findAll().isEmpty()) return null;
         return lightRepository.findFirstByOrderByCreatedAtDesc();
     }
 

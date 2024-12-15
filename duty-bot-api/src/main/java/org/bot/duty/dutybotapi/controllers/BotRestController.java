@@ -84,6 +84,7 @@ public class BotRestController {
     @GetMapping("/light")
     public LightResponseDto getLight() {
         Light light = lightService.getLastLight();
+        if(light == null) return null;
         return new LightResponseDto(light.getLight(), light.getCreatedAt().toString());
     }
 
