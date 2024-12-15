@@ -102,6 +102,5 @@ const fetchLastMessage = async () => {
     }
 
     console.log(`Інтервал оновлення пошуку повідомлень: ${MESSAGE_CHECK} секунд`);
-    fetchLastMessage();
     setInterval(fetchLastMessage, MESSAGE_CHECK * 1000);
 })();
