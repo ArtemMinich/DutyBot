@@ -7,11 +7,10 @@ const { StringSession } = require('telegram/sessions');
 
 const sessionFile = './session.txt';
 
-// Завантажуємо значення із .env
 const API_ID = parseInt(process.env.TELEGRAM_API_ID, 10);
 const API_HASH = process.env.TELEGRAM_API_HASH;
 const API_URL = process.env.API_URL;
-const QUEUE_NUMBER = process.env.QUEUE_NUMBER || '3'; // Номер черги
+const QUEUE_NUMBER = process.env.QUEUE_NUMBER || '3';
 const MESSAGE_CHECK = process.env.MESSAGE_CHECK || 1800
 const CHANNEL_USERNAME = process.env.CHANNEL_USERNAME;
 

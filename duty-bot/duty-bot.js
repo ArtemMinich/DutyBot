@@ -200,27 +200,20 @@ bot.on('poll_answer', (pollAnswer) => {
 
 // Перевірка світла ////////////////////////////////////////
 
-let lastOffTimes;  // Для збереження попередніх даних
+let lastOffTimes;  
 const LIGHT_CHECK = process.env.LIGHT_CHECK || 1800
-
-// Функція для перевірки зміни часу відключень
+console.log(`Інтервал оновлення даних про світло: ${LIGHT_CHECK} секунд`);
 const checkScheduleChanges = async () => {
-  const response = await axios.get(`${API_URL}/light`);
+  console.log('Перевірка світла...');
+  const response = await axios.get(`${API_URL}/light`); 
   if(response.data || !(response.data.trim() === "")){
     const currentOffTimes = JSON.parse(response.data.light) || [];
-    // Перевірка, чи змінилися дані
     if (JSON.stringify(currentOffTimes) !== JSON.stringify(lastOffTimes)) {
         bot.sendMessage(GROUP_ID, `Оновлені години відключень:\n${currentOffTimes.join('\n')}`);
-
-        // Оновлюємо lastOffTimes
         lastOffTimes = currentOffTimes;
     }
   }
 };
-
-// Перевіряємо кожні 30 хвилин
 setInterval(checkScheduleChanges, LIGHT_CHECK * 1000);
-
-// Початкове перевіряння одразу при запуску
 
 bot.on('polling_error', (error) => console.error('Polling Error:', error));
