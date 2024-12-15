@@ -35,3 +35,5 @@ build/
 /duty-bot/.env
 .env
 init.sql
+session.txt
+/light-bot/session.txt

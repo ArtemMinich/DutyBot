@@ -2,6 +2,7 @@ require('dotenv').config();
 const TelegramBot = require('node-telegram-bot-api');
 const axios = require('axios');
 const schedule = require('node-schedule');
+const { lightOffs } = require('./light.js');
 
 const BOT_TOKEN = process.env.BOT_TOKEN;
 const bot = new TelegramBot(BOT_TOKEN, { polling: true });
@@ -9,7 +10,7 @@ const bot = new TelegramBot(BOT_TOKEN, { polling: true });
 const API_URL = process.env.API_URL;
 const ALLOWED_IDS = process.env.ALLOWED_IDS ? process.env.ALLOWED_IDS.split(',') : [];
 
-// Голосування ////////////////////////////////////////
+// Єбашкі ////////////////////////////////////////
 
 const mainMenu = {
     reply_markup: {
@@ -106,6 +107,7 @@ bot.on('callback_query', async (query) =>  {
     }
 });
 
+
 // Голосування ////////////////////////////////////////
 
 const GROUP_ID = process.env.GROUP_ID
@@ -196,8 +198,29 @@ bot.on('poll_answer', (pollAnswer) => {
   console.log(`Користувач ${user.id} проголосував за: ${option_ids}`);
 });
 
+// Перевірка світла ////////////////////////////////////////
+
+let lastOffTimes = [];  // Для збереження попередніх даних
+const LIGHT_CHECK = process.env.LIGHT_CHECK || 1800
+
+// Функція для перевірки зміни часу відключень
+const checkScheduleChanges = async () => {
+  const response = await axios.get(`${API_URL}/light`);
+  if(response.data || !(response.data.trim() === "")){
+    const currentOffTimes = JSON.parse(response.data.light) || [];
+    // Перевірка, чи змінилися дані
+    if (JSON.stringify(currentOffTimes) !== JSON.stringify(lastOffTimes)) {
+        bot.sendMessage(GROUP_ID, `Оновлені години відключень:\n${currentOffTimes.join('\n')}`);
+
+        // Оновлюємо lastOffTimes
+        lastOffTimes = currentOffTimes;
+    }
+  }
+};
+
+// Перевіряємо кожні 30 хвилин
+setInterval(checkScheduleChanges, LIGHT_CHECK * 1000);
+
+// Початкове перевіряння одразу при запуску
 
 bot.on('polling_error', (error) => console.error('Polling Error:', error));
-
-
-

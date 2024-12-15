@@ -23,6 +23,8 @@ services:
       context: ./duty-bot
       dockerfile: Dockerfile
     container_name: duty-bot
+    stdin_open: true  # Дозволяє ввід через термінал
+    tty: true  
     environment:
       TZ: Europe/Kyiv
       BOT_TOKEN: ${BOT_TOKEN}
@@ -33,6 +35,11 @@ services:
       POLL_MINUTES: ${POLL_MINUTES}
       POLL_EXPIRETIME: ${POLL_EXPIRETIME}
       DAYS_OF_WEEK: ${DAYS_OF_WEEK}
+      LIGHT_CHECK: ${LIGHT_CHECK}
+      TELEGRAM_API_ID: ${TELEGRAM_API_ID}
+      TELEGRAM_API_HASH: ${TELEGRAM_API_HASH}
+      CHANNEL_USERNAME: ${CHANNEL_USERNAME}
+      QUEUE_NUMBER: ${QUEUE_NUMBER}
     ports:
       - "3000:3000"
     depends_on:
@@ -40,7 +47,7 @@ services:
     networks:
       - internal-duty-bot-network
     restart: always
-
+    
 networks:
   internal-duty-bot-network:
     name: internal-duty-bot-network
