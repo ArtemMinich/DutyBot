@@ -208,8 +208,9 @@ const checkScheduleChanges = async () => {
   const response = await axios.get(`${API_URL}/light`); 
   if(response.data || !(response.data.trim() === "")){
     const currentOffTimes = JSON.parse(response.data.light) || [];
+    const date = response.data.date;
     if (JSON.stringify(currentOffTimes) !== JSON.stringify(lastOffTimes)) {
-        bot.sendMessage(GROUP_ID, `Оновлені години відключень:\n${currentOffTimes.join('\n')}`);
+        bot.sendMessage(GROUP_ID, `Години відключень на ${date}:\n${currentOffTimes.join('\n')}`);
         lastOffTimes = currentOffTimes;
     }
   }

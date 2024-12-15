@@ -1,4 +1,4 @@
 package org.bot.duty.dutybotapi.dto.light;
 
-public record LightRequestDto(String light) {
+public record LightRequestDto(String light, String date) {
 }

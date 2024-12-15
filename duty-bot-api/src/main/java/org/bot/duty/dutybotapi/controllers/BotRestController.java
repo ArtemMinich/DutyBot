@@ -85,12 +85,12 @@ public class BotRestController {
     public LightResponseDto getLight() {
         Light light = lightService.getLastLight();
         if(light == null) return null;
-        return new LightResponseDto(light.getLight(), light.getCreatedAt().toString());
+        return new LightResponseDto(light.getLight(), light.getDate());
     }
 
     @PostMapping("/light")
     public LightResponseDto saveLight(@RequestBody LightRequestDto lightRequestDto) {
-        Light light = lightService.save(lightRequestDto.light());
-        return new LightResponseDto(light.getLight(), light.getCreatedAt().toString());
+        Light light = lightService.save(lightRequestDto.light(), lightRequestDto.date());
+        return new LightResponseDto(light.getLight(), light.getDate());
     }
 }

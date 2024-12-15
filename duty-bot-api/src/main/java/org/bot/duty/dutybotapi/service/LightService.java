@@ -17,8 +17,9 @@ public class LightService {
         return lightRepository.findFirstByOrderByCreatedAtDesc();
     }
 
-    public Light save(String light) {
+    public Light save(String light, String date) {
         Light lightEntity = new Light();
+        lightEntity.setDate(date);
         lightEntity.setLight(light);
         return lightRepository.save(lightEntity);
     }

@@ -19,6 +19,9 @@ public class Light {
     @Column(nullable = false)
     private String light;
 
+    @Column(nullable = false)
+    private String date;
+
     @Column(name = "created_at")
     @CreationTimestamp
     private LocalDateTime createdAt;

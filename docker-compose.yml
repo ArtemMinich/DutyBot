@@ -41,6 +41,7 @@ services:
       TELEGRAM_API_HASH: ${TELEGRAM_API_HASH}
       CHANNEL_USERNAME: ${CHANNEL_USERNAME}
       QUEUE_NUMBER: ${QUEUE_NUMBER}
+      SEMIQUEUE_NUMBER: ${SEMIQUEUE_NUMBER}
     ports:
       - "3000:3000"
     depends_on:

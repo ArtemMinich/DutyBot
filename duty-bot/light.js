@@ -11,6 +11,7 @@ const API_ID = parseInt(process.env.TELEGRAM_API_ID, 10);
 const API_HASH = process.env.TELEGRAM_API_HASH;
 const API_URL = process.env.API_URL;
 const QUEUE_NUMBER = process.env.QUEUE_NUMBER || '3';
+const SEMIQUEUE_NUMBER = process.env.SEMIQUEUE_NUMBER || 'II';
 const MESSAGE_CHECK = process.env.MESSAGE_CHECK || 1800
 const CHANNEL_USERNAME = process.env.CHANNEL_USERNAME;
 
@@ -23,9 +24,11 @@ const client = new TelegramClient(stringSession, API_ID, API_HASH, {
 });
 
 const queueRegex = new RegExp(
-    `■ (\\d{2}:\\d{2}-\\d{2}:\\d{2})\\s.*?(${QUEUE_NUMBER}( черг|,| і |$))`,
+    `■ ${QUEUE_NUMBER} черга \\(${SEMIQUEUE_NUMBER} підчерга\\) ([\\d:,\-\\s]+)`,
     'g'
 );
+
+const dateRegex = new RegExp('\\d{1,2} [а-яіїєґ]+', 'gi')
  
 
 const fetchLastMessage = async () => {
@@ -35,18 +38,20 @@ const fetchLastMessage = async () => {
 
         if (lastMessage !== lastSavedMessage) {
             lastSavedMessage = lastMessage;
-
             console.log(`[${new Date().toLocaleTimeString()}] Оновлене повідомлення: ${lastSavedMessage}`);
             const matches = [...lastMessage.matchAll(queueRegex)];
+            const date = lastMessage.match(dateRegex)[0];
             if (matches.length > 0) {
-                lightOffs.splice(0, lightOffs.length, ...matches.map(match => match[1]));
-                console.log(`Знайдені години для "${QUEUE_NUMBER} черги":`, lightOffs);
+                const lightOffs = matches.map(match => match[1]);
+                const splitHours = lightOffs.flatMap(hours => hours.split(',').map(hour => hour.trim()));
+                console.log(`Знайдені години для "${QUEUE_NUMBER} черги ${SEMIQUEUE_NUMBER} підчерги (${date}):`, splitHours);
                 const response = await axios.post(`${API_URL}/light`,{
-                    light: JSON.stringify(lightOffs)
+                    light: JSON.stringify(splitHours),
+                    date: date.toString()
                 });
             }
             else {
-                console.log(`Для "${QUEUE_NUMBER} черги" немає даних.`);
+                console.log(`Для "${QUEUE_NUMBER} черги ${SEMIQUEUE_NUMBER} підчерги" немає даних.`);
             }
         } else {
             console.log(`[${new Date().toLocaleTimeString()}] Повідомлення не змінилося.`);
