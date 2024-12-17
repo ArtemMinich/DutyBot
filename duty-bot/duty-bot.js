@@ -152,12 +152,14 @@ const collectPollData = async () => {
     );
 
     for (const response of responses) {
-      const message = `${response.option}:\n` +
-        (response.lastNames.length > 0
-          ? response.lastNames.join(', ')
-          : 'Ніхто');
-
-      await bot.sendMessage(GROUP_ID, message);
+      if(response.lastNames.length > 0){
+        let message = `${response.option}:\n` +
+        response.lastNames.join('\n');
+        if(response.option==='Магазин'){
+          message = 'Дозвольте:\n' + message;
+        }
+        await bot.sendMessage(GROUP_ID, message);
+      }
     }
 
   } catch (error) {
