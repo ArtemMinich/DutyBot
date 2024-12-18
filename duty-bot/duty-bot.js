@@ -145,7 +145,7 @@ const collectPollData = async () => {
 
     
     const responses = await Promise.all(
-      results.map(async (result) => {
+      results.filter(result => result.userIds.length !==0).map(async (result) => {  
         const response = await axios.post(`${API_URL}/poll`, result);
         return { option: result.option, lastNames: response.data.lastNames };
       })
