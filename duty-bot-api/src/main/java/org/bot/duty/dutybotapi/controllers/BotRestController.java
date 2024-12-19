@@ -96,6 +96,15 @@ public class BotRestController {
         return new PollUpdateResponseDto(poll.getUIDPOLL(),poll.getVotes(),poll.getIsActive());
     }
 
+    @GetMapping("/poll/active")
+    public PollUpdateResponseDto activePoll() {
+        Poll poll = pollService.getActive();
+        if( poll != null ) {
+            return new PollUpdateResponseDto(poll.getUIDPOLL(),poll.getVotes(),poll.getIsActive());
+        }
+        return new PollUpdateResponseDto(null,"{}",false);
+    }
+
     @GetMapping("/light")
     public LightResponseDto getLight() {
         Light light = lightService.getLastLight();

@@ -41,4 +41,8 @@ public class PollService {
         }
         return pollRepository.save(poll);
     }
+
+    public Poll getActive() {
+        return pollRepository.findByIsActive(true);
+    }
 }

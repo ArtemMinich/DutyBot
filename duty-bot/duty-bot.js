@@ -113,7 +113,8 @@ bot.on('callback_query', async (query) =>  {
 const GROUP_ID = process.env.GROUP_ID
 const POLL_HOUR = process.env.POLL_HOUR || 16
 const POLL_MINUTES = process.env.POLL_MINUTES || 0
-const POLL_EXPIRETIME = process.env.POLL_EXPIRETIME
+const POLL_COLLECT_HOUR = process.env.POLL_COLLECT_HOUR
+const POLL_COLLECT_MINUTES = process.env.POLL_COLLECT_MINUTES
 const DAYS_OF_WEEK = process.env.DAYS_OF_WEEK || 10
   ? process.env.DAYS_OF_WEEK.split(',').map(day => parseInt(day))
   : [];
@@ -126,8 +127,20 @@ let pollData = {
   votes: {}, 
 };
 
+const getActivePoll = async () => {
+  try {
+    const response = await axios.get(`${API_URL}/poll/active`);
+    console.log(response.data.pollId);
+    console.log(response.data.votes);
+    pollData.pollId = response.data.pollId;
+    pollData.votes = JSON.parse(response.data.votes);
+  } catch (error) {
+    console.error('Помилка запиту отримання активного голосування:', error.message);
+  }
+}
+getActivePoll();
 
-const collectPollData = async () => {
+const collect = schedule.scheduleJob({ hour: POLL_COLLECT_HOUR, minute: POLL_COLLECT_MINUTES, dayOfWeek: DAYS_OF_WEEK }, async () => {
   const response = await axios.get(`${API_URL}/poll/stop`);
   pollData.pollId = response.data.pollId;
   pollData.votes = JSON.parse(response.data.votes);
@@ -169,10 +182,9 @@ const collectPollData = async () => {
     
     pollData = { pollId: null, votes: {} };
   }
-};
+});
 
-
-const job = schedule.scheduleJob({ hour: POLL_HOUR, minute: POLL_MINUTES, dayOfWeek: DAYS_OF_WEEK }, () => {
+const createPoll = schedule.scheduleJob({ hour: POLL_HOUR, minute: POLL_MINUTES, dayOfWeek: DAYS_OF_WEEK }, () => {
   const question = questions[Math.floor(Math.random() * questions.length)];
 
   bot.sendPoll(GROUP_ID, question, options, {
@@ -193,6 +205,8 @@ const job = schedule.scheduleJob({ hour: POLL_HOUR, minute: POLL_MINUTES, dayOfW
     console.error("Помилка надсилання голосування:", error.message);
   });
 });
+
+
 
 
 bot.on('poll_answer', async (pollAnswer) => {
