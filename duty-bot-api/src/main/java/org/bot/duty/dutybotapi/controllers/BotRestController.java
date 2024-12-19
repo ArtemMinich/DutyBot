@@ -8,8 +8,11 @@ import org.bot.duty.dutybotapi.dto.light.LightRequestDto;
 import org.bot.duty.dutybotapi.dto.light.LightResponseDto;
 import org.bot.duty.dutybotapi.dto.poll.PollOptionRequestDto;
 import org.bot.duty.dutybotapi.dto.poll.PollOptionResponseDto;
+import org.bot.duty.dutybotapi.dto.poll.update.PollUpdateRequestDto;
+import org.bot.duty.dutybotapi.dto.poll.update.PollUpdateResponseDto;
 import org.bot.duty.dutybotapi.entity.Cadet;
 import org.bot.duty.dutybotapi.entity.Light;
+import org.bot.duty.dutybotapi.entity.Poll;
 import org.bot.duty.dutybotapi.service.CadetService;
 import org.bot.duty.dutybotapi.service.LightService;
 import org.bot.duty.dutybotapi.service.PollService;
@@ -79,6 +82,18 @@ public class BotRestController {
     @PostMapping("/poll")
     public PollOptionResponseDto receivePollResults(@RequestBody PollOptionRequestDto pollResult) {
         return new PollOptionResponseDto(pollResult.option(),pollService.fromIdToLastname(pollResult.userIds()));
+    }
+
+    @PutMapping("/poll/update")
+    public PollUpdateResponseDto updatePoll(@RequestBody PollUpdateRequestDto pollUpdateRequestDto){
+        Poll poll = pollService.update(pollUpdateRequestDto.pollId(),pollUpdateRequestDto.votes());
+        return new PollUpdateResponseDto(poll.getUIDPOLL(),poll.getVotes(),poll.getIsActive());
+    }
+
+    @GetMapping("/poll/stop")
+    public PollUpdateResponseDto stopPoll() {
+        Poll poll = pollService.stop();
+        return new PollUpdateResponseDto(poll.getUIDPOLL(),poll.getVotes(),poll.getIsActive());
     }
 
     @GetMapping("/light")

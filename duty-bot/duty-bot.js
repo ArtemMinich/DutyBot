@@ -128,6 +128,9 @@ let pollData = {
 
 
 const collectPollData = async () => {
+  const response = await axios.get(`${API_URL}/poll/stop`);
+  pollData.pollId = response.data.pollId;
+  pollData.votes = JSON.parse(response.data.votes);
   if (!pollData.pollId) {
     bot.sendMessage(GROUP_ID, "Немає активного голосування для збору даних.");
     return;
@@ -139,13 +142,11 @@ const collectPollData = async () => {
       const userIds = Object.entries(pollData.votes)
         .filter(([_, optionIds]) => optionIds.includes(index))
         .map(([userId]) => userId);
-
       return { option, userIds };
     });
 
-    
     const responses = await Promise.all(
-      results.filter(result => result.userIds.length !==0).map(async (result) => {  
+      results.map(async (result) => {  
         const response = await axios.post(`${API_URL}/poll`, result);
         return { option: result.option, lastNames: response.data.lastNames };
       })
@@ -176,13 +177,15 @@ const job = schedule.scheduleJob({ hour: POLL_HOUR, minute: POLL_MINUTES, dayOfW
 
   bot.sendPoll(GROUP_ID, question, options, {
     is_anonymous: false, 
-  }).then((poll) => {
+  }).then(async (poll) => {
     pollData.pollId = poll.poll.id; 
     pollData.votes = {}; 
 
     console.log("Голосування створено:", poll.poll.id);
-
-    
+    const response = await axios.put(`${API_URL}/poll/update`, {
+      pollId: poll.poll.id,
+      votes: JSON.stringify(pollData.votes),
+    });
     setTimeout(() => {
       collectPollData();
     }, POLL_EXPIRETIME * 1000); 
@@ -192,11 +195,13 @@ const job = schedule.scheduleJob({ hour: POLL_HOUR, minute: POLL_MINUTES, dayOfW
 });
 
 
-bot.on('poll_answer', (pollAnswer) => {
+bot.on('poll_answer', async (pollAnswer) => {
   const { user, option_ids } = pollAnswer;
-
-  
   pollData.votes[user.id] = option_ids;
+  const response = await axios.put(`${API_URL}/poll/update`, {
+    pollId: pollData.pollId,
+    votes: JSON.stringify(pollData.votes),
+  });
   console.log(`Користувач ${user.id} проголосував за: ${option_ids}`);
 });
 
