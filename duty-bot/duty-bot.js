@@ -213,10 +213,13 @@ bot.on('poll_answer', async (pollAnswer) => {
     const { user, option_ids } = pollAnswer;
     pollData.votes[user.id] = option_ids;
     getActivePoll();
-    const response = await axios.put(`${API_URL}/poll/update`, {
-    pollId: pollData.pollId,
-    votes: JSON.stringify(pollData.votes),
-  });
+    if(pollData.pollId){
+      const response = await axios.put(`${API_URL}/poll/update`, {
+        pollId: pollData.pollId,
+        votes: JSON.stringify(pollData.votes),
+      });
+    }
+
   console.log(`Користувач ${user.id} проголосував за: ${option_ids}`);
 });
 
