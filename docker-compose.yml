@@ -23,8 +23,8 @@ services:
       context: ./duty-bot
       dockerfile: Dockerfile
     container_name: duty-bot
-    stdin_open: true  # Дозволяє ввід через термінал
-    tty: true  
+    stdin_open: true
+    tty: true
     environment:
       TZ: Europe/Kyiv
       BOT_TOKEN: ${BOT_TOKEN}
@@ -33,7 +33,8 @@ services:
       GROUP_ID: ${GROUP_ID}
       POLL_HOUR: ${POLL_HOUR}
       POLL_MINUTES: ${POLL_MINUTES}
-      POLL_EXPIRETIME: ${POLL_EXPIRETIME}
+      POLL_COLLECT_HOUR: ${POLL_COLLECT_HOUR}
+      POLL_COLLECT_MINUTES: ${POLL_COLLECT_MINUTES}
       DAYS_OF_WEEK: ${DAYS_OF_WEEK}
       LIGHT_CHECK: ${LIGHT_CHECK}
       MESSAGE_CHECK: ${MESSAGE_CHECK}
@@ -49,7 +50,7 @@ services:
     networks:
       - internal-duty-bot-network
     restart: always
-    
+
 networks:
   internal-duty-bot-network:
     name: internal-duty-bot-network
