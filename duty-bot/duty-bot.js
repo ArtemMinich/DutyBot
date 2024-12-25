@@ -212,7 +212,7 @@ const createPoll = schedule.scheduleJob({ hour: POLL_HOUR, minute: POLL_MINUTES,
 bot.on('poll_answer', async (pollAnswer) => {
     const { user, option_ids } = pollAnswer;
     pollData.votes[user.id] = option_ids;
-    cgetActivePoll();
+    getActivePoll();
     const response = await axios.put(`${API_URL}/poll/update`, {
     pollId: pollData.pollId,
     votes: JSON.stringify(pollData.votes),
