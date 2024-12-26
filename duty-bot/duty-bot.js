@@ -138,7 +138,9 @@ const getActivePoll = async () => {
     console.error('Помилка запиту отримання активного голосування:', error.message);
   }
 }
-await getActivePoll();
+(async () => {
+  await getActivePoll();
+})();
 
 const collect = schedule.scheduleJob({ hour: POLL_COLLECT_HOUR, minute: POLL_COLLECT_MINUTES, dayOfWeek: DAYS_OF_WEEK }, async () => {
   const response = await axios.get(`${API_URL}/poll/stop`);
@@ -211,7 +213,9 @@ const createPoll = schedule.scheduleJob({ hour: POLL_HOUR, minute: POLL_MINUTES,
 
 bot.on('poll_answer', async (pollAnswer) => {
     const { user, option_ids } = pollAnswer;
-    await getActivePoll();
+    (async () => {
+      await getActivePoll();
+    })();
     pollData.votes[user.id] = option_ids;
     if(pollData.pollId){
       const response = await axios.put(`${API_URL}/poll/update`, {
