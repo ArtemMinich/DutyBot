@@ -57,10 +57,10 @@ const doCommand = async (chatId, userId,command,args)=>{
             args: args
         });
         if(chatId===GROUP_ID){
-          console.log(`᛭ Затянуті-Привиди 222 ᛭(${await getCadet(userId)}) send command: ${command} with args: ${args}`);
+          console.log(`᛭ Затянуті-Привиди 222 ᛭(${await getCadet(userId).lastName}) send command: ${command} with args: ${args}`);
         }
         else{
-          console.log(`${await getCadet(chatId)} send command: ${command} with args: ${args}`);
+          console.log(`${await getCadet(chatId).lastName} send command: ${command} with args: ${args}`);
         }
         
         const content = response.data.content
@@ -239,7 +239,7 @@ bot.on('poll_answer', async (pollAnswer) => {
       });
     }
 
-  console.log(`Користувач ${await getCadet(user.id)} проголосував за: ${option_ids}`);
+  console.log(`Користувач ${await getCadet(user.id).lastName} проголосував за: ${option_ids}`);
 });
 
 // Перевірка світла ////////////////////////////////////////
