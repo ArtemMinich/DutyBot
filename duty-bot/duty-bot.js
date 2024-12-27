@@ -10,6 +10,15 @@ const bot = new TelegramBot(BOT_TOKEN, { polling: true });
 const API_URL = process.env.API_URL;
 const ALLOWED_IDS = process.env.ALLOWED_IDS ? process.env.ALLOWED_IDS.split(',') : [];
 
+const getCadet = async (cadetId) =>{
+  try {
+    const response = await axios.get(`${API_URL}/cadets/${cadetId}`);
+    return response.data;    
+  } catch (error) {
+    console.error('Помилка запиту:', error.message);
+  }
+}
+
 // Єбашкі ////////////////////////////////////////
 
 const mainMenu = {
@@ -41,13 +50,19 @@ const countMenu = (command,numOfCadets) => ({
     },
 });
 
-const doCommand = async (chatId,command,args)=>{
+const doCommand = async (chatId, userId,command,args)=>{
     try {
         const response = await axios.post(`${API_URL}/command`, {
             command: command,
             args: args
         });
-        console.log(`${chatId} send command: ${command} with args: ${args}`);
+        if(chatId===GROUP_ID){
+          console.log(`᛭ Затянуті-Привиди 222 ᛭(${await getCadet(userId)}) send command: ${command} with args: ${args}`);
+        }
+        else{
+          console.log(`${await getCadet(chatId)} send command: ${command} with args: ${args}`);
+        }
+        
         const content = response.data.content
         if(content && content.trim() !== ''){
             bot.sendMessage(chatId, `${content}`);
@@ -87,7 +102,7 @@ bot.on('callback_query', async (query) =>  {
     const userId = query.from.id;
     if (data.startsWith('/') && ALLOWED_IDS.includes(chatId.toString()) && ALLOWED_IDS.includes(userId.toString()) && data.indexOf('_') == -1) {
         if(data == '/giveebashka'){  
-            doCommand(chatId, '/allebashka',"");
+            doCommand(chatId, userId, '/allebashka',"");
             const cadets = await getCadets(false)
             bot.sendMessage(chatId, `Оберіть кількість людей:`, countMenu(data,cadets.size));     
         }else if(data == '/freeebashka'){
@@ -99,11 +114,11 @@ bot.on('callback_query', async (query) =>  {
         }
     }
     if(data.startsWith('/allebashka') && ALLOWED_IDS.includes(chatId.toString())  && data.indexOf('_') == -1){
-        doCommand(chatId, data,"");
+        doCommand(chatId, userId, data,"");
     }
     if (data.indexOf('_') != -1) {
         const [command, args] = data.split('_');
-        doCommand(chatId, command,args)
+        doCommand(chatId, userId, command,args)
     }
 });
 
@@ -224,7 +239,7 @@ bot.on('poll_answer', async (pollAnswer) => {
       });
     }
 
-  console.log(`Користувач ${user.id} проголосував за: ${option_ids}`);
+  console.log(`Користувач ${await getCadet(user.id)} проголосував за: ${option_ids}`);
 });
 
 // Перевірка світла ////////////////////////////////////////

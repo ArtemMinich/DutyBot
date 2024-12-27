@@ -1,6 +1,7 @@
 package org.bot.duty.dutybotapi.controllers;
 
 import lombok.AllArgsConstructor;
+import org.bot.duty.dutybotapi.dto.CadetDto;
 import org.bot.duty.dutybotapi.dto.CadetsDto;
 import org.bot.duty.dutybotapi.dto.command.CommandRequestDto;
 import org.bot.duty.dutybotapi.dto.command.CommandResponseDto;
@@ -74,9 +75,11 @@ public class BotRestController {
                         .map(Cadet::getLastName).toList());
     }
 
-    @GetMapping("/cadets/{id}")
-    public String getFreeCadets(@PathVariable("id") Long id) {
-        return cadetService.getCadetById(id);
+    @GetMapping("/cadets/{chatId}")
+    public CadetDto getFreeCadets(@PathVariable("chatId") String chatId) {
+        Cadet cadet = cadetService.getCadetByChatId(chatId);
+        if(cadet==null) return new CadetDto(0L,"НЕВІДОМИЙ","НЕВІДОМИЙ","НЕВІДОМИЙ","НЕВІДОМИЙ",0,false);
+        return new CadetDto(cadet.getId(),cadet.getFirstName(),cadet.getSecondName(),cadet.getLastName(),cadet.getChatId(),cadet.getEbashkaCount(),cadet.isEbashkaStatus());
     }
 
     @PostMapping("/poll")
