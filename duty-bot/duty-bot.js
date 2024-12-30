@@ -56,7 +56,7 @@ const doCommand = async (chatId, userId,command,args)=>{
             command: command,
             args: args
         });
-        if(chatId===GROUP_ID){
+        if(chatId==GROUP_ID){
           const cadet = await getCadet(userId);
           console.log(`᛭ Затянуті-Привиди 222 ᛭(${cadet.lastName}) send command: ${command} with args: ${args}`);
         }
@@ -230,9 +230,7 @@ const createPoll = schedule.scheduleJob({ hour: POLL_HOUR, minute: POLL_MINUTES,
 
 bot.on('poll_answer', async (pollAnswer) => {
     const { user, option_ids } = pollAnswer;
-    (async () => {
-      await getActivePoll();
-    })();
+    await getActivePoll();
     pollData.votes[user.id] = option_ids;
     if(pollData.pollId){
       const response = await axios.put(`${API_URL}/poll/update`, {
