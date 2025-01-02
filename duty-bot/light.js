@@ -1,5 +1,4 @@
 require('dotenv').config();
-const axios = require('axios');
 const fs = require('fs');
 const readline = require('readline');
 const { TelegramClient } = require('telegram');
@@ -12,7 +11,6 @@ const API_HASH = process.env.TELEGRAM_API_HASH;
 const API_URL = process.env.API_URL;
 const QUEUE_NUMBER = process.env.QUEUE_NUMBER || '3';
 const SEMIQUEUE_NUMBER = process.env.SEMIQUEUE_NUMBER || 'II';
-const MESSAGE_CHECK = process.env.MESSAGE_CHECK || 1800
 const CHANNEL_USERNAME = process.env.CHANNEL_USERNAME;
 
 let lastSavedMessage = '';
@@ -45,10 +43,10 @@ const fetchLastMessage = async () => {
                 const lightOffs = matches.map(match => match[1]);
                 const splitHours = lightOffs.flatMap(hours => hours.split(',').map(hour => hour.trim()));
                 console.log(`Знайдені години для "${QUEUE_NUMBER} черги ${SEMIQUEUE_NUMBER} підчерги (${date}):`, splitHours);
-                const response = await axios.post(`${API_URL}/light`,{
-                    light: JSON.stringify(splitHours),
-                    date: date.toString()
-                });
+                return  {
+                    date: date,
+                    hours: splitHours
+                }
             }
             else {
                 console.log(`Для "${QUEUE_NUMBER} черги ${SEMIQUEUE_NUMBER} підчерги" немає даних.`);
@@ -101,6 +99,6 @@ const fetchLastMessage = async () => {
         console.log('Сесія збережена.');
     }
 
-    console.log(`Інтервал оновлення пошуку повідомлень: ${MESSAGE_CHECK} секунд`);
-    setInterval(fetchLastMessage, MESSAGE_CHECK * 1000);
 })();
+
+module.exports = fetchLastMessage;
