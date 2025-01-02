@@ -8,7 +8,6 @@ const sessionFile = './session.txt';
 
 const API_ID = parseInt(process.env.TELEGRAM_API_ID, 10);
 const API_HASH = process.env.TELEGRAM_API_HASH;
-const API_URL = process.env.API_URL;
 const QUEUE_NUMBER = process.env.QUEUE_NUMBER || '3';
 const SEMIQUEUE_NUMBER = process.env.SEMIQUEUE_NUMBER || 'II';
 const CHANNEL_USERNAME = process.env.CHANNEL_USERNAME;
@@ -16,7 +15,6 @@ const CHANNEL_USERNAME = process.env.CHANNEL_USERNAME;
 let lastSavedMessage = '';
 const sessionData = fs.existsSync(sessionFile) ? fs.readFileSync(sessionFile, 'utf-8') : '';
 const stringSession = new StringSession(sessionData);
-const lightOffs = [];
 const client = new TelegramClient(stringSession, API_ID, API_HASH, {
     connectionRetries: 5,
 });

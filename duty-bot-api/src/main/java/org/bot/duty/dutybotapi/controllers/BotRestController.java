@@ -5,17 +5,13 @@ import org.bot.duty.dutybotapi.dto.CadetDto;
 import org.bot.duty.dutybotapi.dto.CadetsDto;
 import org.bot.duty.dutybotapi.dto.command.CommandRequestDto;
 import org.bot.duty.dutybotapi.dto.command.CommandResponseDto;
-import org.bot.duty.dutybotapi.dto.light.LightRequestDto;
-import org.bot.duty.dutybotapi.dto.light.LightResponseDto;
 import org.bot.duty.dutybotapi.dto.poll.PollOptionRequestDto;
 import org.bot.duty.dutybotapi.dto.poll.PollOptionResponseDto;
 import org.bot.duty.dutybotapi.dto.poll.update.PollUpdateRequestDto;
 import org.bot.duty.dutybotapi.dto.poll.update.PollUpdateResponseDto;
 import org.bot.duty.dutybotapi.entity.Cadet;
-import org.bot.duty.dutybotapi.entity.Light;
 import org.bot.duty.dutybotapi.entity.Poll;
 import org.bot.duty.dutybotapi.service.CadetService;
-import org.bot.duty.dutybotapi.service.LightService;
 import org.bot.duty.dutybotapi.service.PollService;
 import org.springframework.web.bind.annotation.*;
 
@@ -29,8 +25,6 @@ public class BotRestController {
     private CadetService cadetService;
 
     private PollService pollService;
-
-    private LightService lightService;
 
     @PostMapping("/command")
     public CommandResponseDto command(@RequestBody CommandRequestDto commandRequest) {
@@ -108,16 +102,4 @@ public class BotRestController {
         return new PollUpdateResponseDto(null,"{}",false);
     }
 
-    @GetMapping("/light")
-    public LightResponseDto getLight() {
-        Light light = lightService.getLastLight();
-        if(light == null) return null;
-        return new LightResponseDto(light.getLight(), light.getDate());
-    }
-
-    @PostMapping("/light")
-    public LightResponseDto saveLight(@RequestBody LightRequestDto lightRequestDto) {
-        Light light = lightService.save(lightRequestDto.light(), lightRequestDto.date());
-        return new LightResponseDto(light.getLight(), light.getDate());
-    }
 }
