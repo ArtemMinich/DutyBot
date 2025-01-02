@@ -2,7 +2,7 @@ require('dotenv').config();
 const TelegramBot = require('node-telegram-bot-api');
 const axios = require('axios');
 const schedule = require('node-schedule');
-const { lightOffs } = require('./light.js');
+// const { lightOffs } = require('./light.js');
 
 const BOT_TOKEN = process.env.BOT_TOKEN;
 const bot = new TelegramBot(BOT_TOKEN, { polling: true });
@@ -244,21 +244,21 @@ bot.on('poll_answer', async (pollAnswer) => {
 
 // Перевірка світла ////////////////////////////////////////
 
-let lastOffTimes;  
-const LIGHT_CHECK = process.env.LIGHT_CHECK || 1800
-console.log(`Інтервал оновлення даних про світло: ${LIGHT_CHECK} секунд`);
-const checkScheduleChanges = async () => {
-  console.log('Перевірка світла...');
-  const response = await axios.get(`${API_URL}/light`); 
-  if(response.data || !(response.data.trim() === "")){
-    const currentOffTimes = JSON.parse(response.data.light) || [];
-    const date = response.data.date;
-    if (JSON.stringify(currentOffTimes) !== JSON.stringify(lastOffTimes)) {
-        bot.sendMessage(GROUP_ID, `Години відключень на ${date}:\n${currentOffTimes.join('\n')}`);
-        lastOffTimes = currentOffTimes;
-    }
-  }
-};
-setInterval(checkScheduleChanges, LIGHT_CHECK * 1000);
+// let lastOffTimes;
+// const LIGHT_CHECK = process.env.LIGHT_CHECK || 1800
+// console.log(`Інтервал оновлення даних про світло: ${LIGHT_CHECK} секунд`);
+// const checkScheduleChanges = async () => {
+//   console.log('Перевірка світла...');
+//   const response = await axios.get(`${API_URL}/light`);
+//   if(response.data || !(response.data.trim() === "")){
+//     const currentOffTimes = JSON.parse(response.data.light) || [];
+//     const date = response.data.date;
+//     if (JSON.stringify(currentOffTimes) !== JSON.stringify(lastOffTimes)) {
+//         bot.sendMessage(GROUP_ID, `Години відключень на ${date}:\n${currentOffTimes.join('\n')}`);
+//         lastOffTimes = currentOffTimes;
+//     }
+//   }
+// };
+// setInterval(checkScheduleChanges, LIGHT_CHECK * 1000);
 
 bot.on('polling_error', (error) => console.error('Polling Error:', error));
