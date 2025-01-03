@@ -217,16 +217,10 @@ const createPoll = schedule.scheduleJob({ hour: POLL_HOUR, minute: POLL_MINUTES,
       pollId: poll.poll.id,
       votes: JSON.stringify(pollData.votes),
     });
-    setTimeout(() => {
-      collectPollData();
-    }, POLL_EXPIRETIME * 1000); 
   }).catch((error) => {
     console.error("Помилка надсилання голосування:", error.message);
   });
 });
-
-
-
 
 bot.on('poll_answer', async (pollAnswer) => {
     const { user, option_ids } = pollAnswer;
@@ -248,7 +242,9 @@ const LIGHT_CHECK = process.env.LIGHT_CHECK || 1800
 console.log(`Інтервал оновлення даних про світло: ${LIGHT_CHECK} секунд`);
 async function sendLightsOffsMessage() {
     await checkLightOffs()
-        .then((data)=> bot.sendMessage(GROUP_ID, `Години відключень на ${data.date}:\n${data.hours.join('\n')}`))
+        .then((data)=>  {
+            if(data) bot.sendMessage(GROUP_ID, `Години відключень на ${data.date}:\n${data.hours.join('\n')}`)
+        })
         .catch((err) =>console.error(err));
 }
 setInterval(sendLightsOffsMessage, LIGHT_CHECK * 1000);

@@ -23,8 +23,6 @@ services:
       context: ./duty-bot
       dockerfile: Dockerfile
     container_name: duty-bot
-    stdin_open: true
-    tty: true
     environment:
       TZ: Europe/Kyiv
       BOT_TOKEN: ${BOT_TOKEN}
@@ -49,7 +47,6 @@ services:
       - duty-api
     networks:
       - internal-duty-bot-network
-    restart: always
 
 networks:
   internal-duty-bot-network:
