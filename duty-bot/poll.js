@@ -14,15 +14,36 @@ const options = ["Магазин", "Пошта", "Парк", "Бігати"];
 
 let pollData = {
     pollId: null,
-    votes: {},
+    votes: [
+        {option: 'Магазин', userIds: [] },
+        {option: 'Пошта', userIds: [] },
+        {option: 'Парк', userIds: [] },
+        {option: 'Бігати', userIds: [] }
+    ]
 };
 
-function addVote(vote) {
-    pollData
+function setPollId(pollId){
+    pollData.pollId = pollId;
+}
+
+function addVote(answer) {
+    pollData.votes[answer.choice].userIds.push(answer.userId);
 }
 
 function clearPoll() {
+    pollData = {
+        pollId: null,
+        votes: [
+            {option: 'Магазин', userIds: [] },
+            {option: 'Пошта', userIds: [] },
+            {option: 'Парк', userIds: [] },
+            {option: 'Бігати', userIds: [] }
+        ]
+    };
+}
 
+function isActive(){
+    return !!pollData.pollId;
 }
 
 module.exports = {
@@ -33,7 +54,10 @@ module.exports = {
     POLL_COLLECT_MINUTES,
     DAYS_OF_WEEK,
     questions,
+    options,
     pollData,
     addVote,
-    clearPoll
+    clearPoll,
+    setPollId,
+    isActive
 }
