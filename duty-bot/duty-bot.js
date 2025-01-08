@@ -57,7 +57,7 @@ const doCommand = async (chatId, userId, command, args) => {
             command: command,
             args: args
         });
-        if (chatId == GROUP_ID) {
+        if (chatId == pollApi.GROUP_ID) {
             const cadet = await getCadet(userId);
             console.log(`᛭ Затянуті-Привиди 222 ᛭(${cadet.lastName}) send command: ${command} with args: ${args}`);
         } else {
