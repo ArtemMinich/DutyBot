@@ -1,5 +1,7 @@
+const axios = require("axios");
 require('dotenv').config();
 
+const API_URL = process.env.API_URL;
 const GROUP_ID = process.env.GROUP_ID;
 const POLL_HOUR = process.env.POLL_HOUR || 16;
 const POLL_MINUTES = process.env.POLL_MINUTES || 0;
@@ -26,8 +28,16 @@ function setPollId(pollId){
     pollData.pollId = pollId;
 }
 
-function addVote(answer) {
+async function createPoll(pollId){
+    setPollId(pollId);
+    const response = await axios.post(`${API_URL}/poll`,pollData);
+    return response.data;
+}
+
+async function addVote(answer) {
     pollData.votes[answer.choice].userIds.push(answer.userId);
+    const response = await axios.patch(`${API_URL}/poll`,pollData);
+    return response.data;
 }
 
 function clearPoll() {
@@ -42,8 +52,21 @@ function clearPoll() {
     };
 }
 
-function isActive(){
-    return !!pollData.pollId;
+async function stopPoll() {
+    clearPoll();
+    await axios.delete(`${API_URL}/poll`);
+
+}
+
+async function isActive(){
+    const response = await axios.get(`${API_URL}/poll`);
+    const pollId = response.data.pollId;
+    if(pollId==="") return false;
+    pollData = {
+        pollId: pollId,
+        votes: JSON.parse( response.data.votes)
+    };
+    return true;
 }
 
 module.exports = {
@@ -57,7 +80,7 @@ module.exports = {
     options,
     pollData,
     addVote,
-    clearPoll,
-    setPollId,
+    stopPoll,
+    createPoll,
     isActive
 }

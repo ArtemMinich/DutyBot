@@ -117,7 +117,7 @@ bot.on('callback_query', async (query) => {
     if (data.startsWith('/allebashka') && ALLOWED_IDS.includes(chatId.toString()) && data.indexOf('_') == -1) {
         doCommand(chatId, userId, data, "");
     }
-    if (data.indexOf('_') != -1) {
+    if (data.indexOf('_') != -1 && ALLOWED_IDS.includes(chatId.toString()) && ALLOWED_IDS.includes(userId.toString())) {
         const [command, args] = data.split('_');
         doCommand(chatId, userId, command, args)
     }
@@ -131,7 +131,7 @@ const collect = schedule.scheduleJob({
     minute: pollApi.POLL_COLLECT_MINUTES,
     dayOfWeek: pollApi.DAYS_OF_WEEK
 }, async () => {
-    if (!pollApi.isActive()) {
+    if (!await pollApi.isActive()) {
         return await bot.sendMessage(pollApi.GROUP_ID, "Немає активного голосування для збору даних.");
     }
     let message = 'Дозвольте:\n';
@@ -147,7 +147,7 @@ const collect = schedule.scheduleJob({
     }
     await bot.sendMessage(pollApi.GROUP_ID, message);
 
-    pollApi.clearPoll();
+    await pollApi.stopPoll();
 });
 
 const createPoll = schedule.scheduleJob({
@@ -160,15 +160,15 @@ const createPoll = schedule.scheduleJob({
     bot.sendPoll(pollApi.GROUP_ID, question, pollApi.options, {
         is_anonymous: false,
     }).then(async (poll) => {
-        pollApi.setPollId(poll.poll.id);
+        await pollApi.createPoll(poll.poll.id);
         console.log("Голосування створено:", poll.poll.id);
     }).catch((error) => console.error("Помилка надсилання голосування:", error.message));
 });
 
 bot.on('poll_answer', async (pollAnswer) => {
     const {user, option_ids} = pollAnswer;
-    if (pollApi.isActive()) {
-        pollApi.addVote({
+    if (await pollApi.isActive()) {
+        await pollApi.addVote({
             choice: option_ids,
             userId: user.id
         })
@@ -185,7 +185,7 @@ console.log(`Інтервал оновлення даних про світло:
 async function sendLightsOffsMessage() {
     await checkLightOffs()
         .then((data) => {
-            if (data) bot.sendMessage(GROUP_ID, `Години відключень на ${data.date}:\n${data.hours.join('\n')}`)
+            if (data) bot.sendMessage(pollApi.GROUP_ID, `Години відключень на ${data.date}:\n${data.hours.join('\n')}`)
         })
         .catch((err) => console.error(err));
 }
