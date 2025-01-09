@@ -17,6 +17,11 @@ services:
       - internal-duty-bot-network
       - external-duty-bot-network
     restart: unless-stopped
+    healthcheck:
+      test: [ "CMD", "curl", "-f", "http://localhost:${SERVER_PORT}/health" ]
+      interval: 10s
+      timeout: 5s
+      retries: 3
 
   duty-bot:
     build:
@@ -44,7 +49,8 @@ services:
     ports:
       - "3000:3000"
     depends_on:
-      - duty-api
+      duty-api:
+        condition: service_healthy
     networks:
       - internal-duty-bot-network
 
