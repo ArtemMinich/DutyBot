@@ -18,7 +18,7 @@ services:
       - external-duty-bot-network
     restart: unless-stopped
     healthcheck:
-      test: [ "CMD", "curl", "-f", "http://localhost:${SERVER_PORT}/health" ]
+      test: [ "CMD", "curl", "-f", "http://localhost:${SERVER_PORT}/actuator/health" ]
       interval: 10s
       timeout: 5s
       retries: 3
