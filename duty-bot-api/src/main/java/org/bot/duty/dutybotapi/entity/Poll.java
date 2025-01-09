@@ -19,7 +19,4 @@ public class Poll {
     @Column(nullable = true, name = "votes")
     private String votes;
 
-    @Column(name = "is_active")
-    private Boolean isActive;
-
 }

@@ -17,14 +17,15 @@ public class PollController {
     @GetMapping()
     @ResponseStatus(value = HttpStatus.OK)
     public PollDto getActivePoll(){
-        Poll poll = pollService.getActive();
+        Poll poll = pollService.get();
+        if (poll == null) return null;
         return new PollDto(poll.getPollId(), poll.getVotes());
     }
 
     @PatchMapping()
     @ResponseStatus(value = HttpStatus.OK)
     public PollDto updateActivePoll(@RequestBody PollDto pollDto){
-        Poll poll = pollService.updateActive(pollDto);
+        Poll poll = pollService.update(pollDto);
         return new PollDto(poll.getPollId(), poll.getVotes());
     }
 

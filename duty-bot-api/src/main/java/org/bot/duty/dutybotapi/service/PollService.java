@@ -12,13 +12,11 @@ public class PollService {
 
     private final PollRepository pollRepository;
 
-    public Poll getActive() {
-        Poll poll = pollRepository.findFirstByIsActive(true);
-        if(poll == null) return start(new PollDto("",""));
-        return poll;
+    public Poll get() {
+        return pollRepository.findFirstByOrderByIdAsc();
     }
 
-    public Poll updateActive(PollDto pollDto) {
+    public Poll update(PollDto pollDto) {
         Poll poll = pollRepository.findByPollId(pollDto.pollId());
         poll.setVotes(pollDto.votes());
         return pollRepository.save(poll);
@@ -32,7 +30,7 @@ public class PollService {
     }
 
     public void stop() {
-        Poll poll = getActive();
+        Poll poll = get();
         pollRepository.delete(poll);
     }
 }

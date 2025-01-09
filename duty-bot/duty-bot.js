@@ -4,6 +4,7 @@ const axios = require('axios');
 const schedule = require('node-schedule');
 const checkLightOffs = require('./light.js');
 const pollApi = require('./poll');
+const {isActive} = require("./poll");
 
 const BOT_TOKEN = process.env.BOT_TOKEN;
 const bot = new TelegramBot(BOT_TOKEN, {polling: true});
@@ -126,28 +127,34 @@ bot.on('callback_query', async (query) => {
 
 // Голосування ////////////////////////////////////////
 
+isActive().then((status) => console.log(status?'Завантажено голосування':'Немає активного голосування'));
+
 const collect = schedule.scheduleJob({
     hour: pollApi.POLL_COLLECT_HOUR,
     minute: pollApi.POLL_COLLECT_MINUTES,
     dayOfWeek: pollApi.DAYS_OF_WEEK
 }, async () => {
-    if (!await pollApi.isActive()) {
-        return await bot.sendMessage(pollApi.GROUP_ID, "Немає активного голосування для збору даних.");
-    }
-    let message = 'Дозвольте:\n';
-    const results = pollApi.pollData.votes;
-    for (let i = 0; i < results.length; i++) {
-        if (results[i].userIds.length > 0) {
-            message += `${results[i].option}:\n`;
-            const cadets = await Promise.all(
-                results[i].userIds.map(userId => getCadet(userId))
-            );
-            message += cadets.map(cadet => cadet.lastName).join('\n') + '\n';
-        }
-    }
-    await bot.sendMessage(pollApi.GROUP_ID, message);
-
-    await pollApi.stopPoll();
+    pollApi.isActive()
+        .then(async (status) => {
+            if (!(status)) {
+                return bot.sendMessage(pollApi.GROUP_ID, "Немає активного голосування для збору даних.");
+            }
+            let message = '';
+            const results = pollApi.getPoll().votes;
+            for (let i = 0; i < results.length; i++) {
+                if (results[i].userIds.length > 0) {
+                    if( i === 0) message += 'Дозвольте:\n';
+                    message += `${results[i].option}:\n`;
+                    for (let j = 0; j < results[i].userIds.length; j++) {
+                        await getCadet(results[i].userIds[j])
+                            .then(cadet => message += `${cadet.lastName}\n`)
+                    }
+                    await bot.sendMessage(pollApi.GROUP_ID, message);
+                    message = '';
+                }
+            }
+            await pollApi.stopPoll();
+        })
 });
 
 const createPoll = schedule.scheduleJob({
@@ -172,9 +179,9 @@ bot.on('poll_answer', async (pollAnswer) => {
             choice: option_ids,
             userId: user.id
         })
+        const cadet = await getCadet(user.id);
+        console.log(`Користувач ${cadet.lastName} проголосував за: ${option_ids}`);
     }
-    const cadet = await getCadet(user.id);
-    console.log(`Користувач ${cadet.lastName} проголосував за: ${option_ids}`);
 });
 
 // Перевірка світла ////////////////////////////////////////

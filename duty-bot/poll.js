@@ -24,19 +24,30 @@ let pollData = {
     ]
 };
 
+function toDto(){
+    return {
+        pollId: pollData.pollId,
+        votes: JSON.stringify(pollData.votes)
+    }
+}
+
+function getPoll() {
+    return pollData;
+}
+
 function setPollId(pollId){
     pollData.pollId = pollId;
 }
 
 async function createPoll(pollId){
     setPollId(pollId);
-    const response = await axios.post(`${API_URL}/poll`,pollData);
+    const response = await axios.post(`${API_URL}/poll`,toDto());
     return response.data;
 }
 
 async function addVote(answer) {
     pollData.votes[answer.choice].userIds.push(answer.userId);
-    const response = await axios.patch(`${API_URL}/poll`,pollData);
+    const response = await axios.patch(`${API_URL}/poll`,toDto());
     return response.data;
 }
 
@@ -60,11 +71,10 @@ async function stopPoll() {
 
 async function isActive(){
     const response = await axios.get(`${API_URL}/poll`);
-    const pollId = response.data.pollId;
-    if(pollId==="") return false;
+    if(response.data === '') return false;
     pollData = {
-        pollId: pollId,
-        votes: JSON.parse( response.data.votes)
+        pollId: response.data.pollId,
+        votes: JSON.parse(response.data.votes)
     };
     return true;
 }
@@ -78,7 +88,7 @@ module.exports = {
     DAYS_OF_WEEK,
     questions,
     options,
-    pollData,
+    getPoll,
     addVote,
     stopPoll,
     createPoll,
