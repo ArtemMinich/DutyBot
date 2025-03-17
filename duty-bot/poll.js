@@ -46,7 +46,15 @@ async function createPoll(pollId){
 }
 
 async function addVote(answer) {
-    pollData.votes[answer.choice].userIds.push(answer.userId);
+    pollData.votes[answer.choice[0]].userIds.push(answer.userId);
+    const response = await axios.patch(`${API_URL}/poll`,toDto());
+    return response.data;
+}
+
+async function removeVote(userId) {
+    pollData.votes.forEach(vote => {
+    vote.userIds = vote.userIds.filter(id => id !== userId);
+    });
     const response = await axios.patch(`${API_URL}/poll`,toDto());
     return response.data;
 }
@@ -90,6 +98,7 @@ module.exports = {
     options,
     getPoll,
     addVote,
+    removeVote,
     stopPoll,
     createPoll,
     isActive

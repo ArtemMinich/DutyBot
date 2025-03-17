@@ -175,12 +175,18 @@ const createPoll = schedule.scheduleJob({
 bot.on('poll_answer', async (pollAnswer) => {
     const {user, option_ids} = pollAnswer;
     if (await pollApi.isActive()) {
-        await pollApi.addVote({
-            choice: option_ids,
-            userId: user.id
-        })
         const cadet = await getCadet(user.id);
-        console.log(`Користувач ${cadet.lastName} проголосував за: ${option_ids}`);
+        if(option_ids.length !== 0){
+            await pollApi.addVote({
+                choice: option_ids,
+                userId: user.id
+            })
+            console.log(`Користувач ${cadet.lastName} проголосував за: ${option_ids}`);
+        } else{
+            await pollApi.removeVote(user.id);
+            console.log(`Користувач ${cadet.lastName} скасував голос`);
+        }
+        
     }
 });
 
