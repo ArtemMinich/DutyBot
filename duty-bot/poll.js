@@ -3,6 +3,7 @@ require('dotenv').config();
 
 const API_URL = process.env.API_URL;
 const GROUP_ID = process.env.GROUP_ID;
+const THREAD_ID = process.env.THREAD_ID;
 const POLL_HOUR = process.env.POLL_HOUR || 16;
 const POLL_MINUTES = process.env.POLL_MINUTES || 0;
 const POLL_COLLECT_HOUR = process.env.POLL_COLLECT_HOUR;
@@ -89,6 +90,7 @@ async function isActive(){
 
 module.exports = {
     GROUP_ID,
+    THREAD_ID,
     POLL_HOUR,
     POLL_MINUTES,
     POLL_COLLECT_HOUR,

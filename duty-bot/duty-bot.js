@@ -137,7 +137,7 @@ const collect = schedule.scheduleJob({
     pollApi.isActive()
         .then(async (status) => {
             if (!(status)) {
-                return bot.sendMessage(pollApi.GROUP_ID, "Немає активного голосування для збору даних.");
+                return bot.sendMessage(pollApi.GROUP_ID, "Немає активного голосування для збору даних.", {message_thread_id: pollApi.THREAD_ID});
             }
             let message = '';
             const results = pollApi.getPoll().votes;
@@ -149,7 +149,7 @@ const collect = schedule.scheduleJob({
                         await getCadet(results[i].userIds[j])
                             .then(cadet => message += `${cadet.lastName}\n`)
                     }
-                    await bot.sendMessage(pollApi.GROUP_ID, message);
+                    await bot.sendMessage(pollApi.GROUP_ID, message, {message_thread_id: pollApi.THREAD_ID});
                     message = '';
                 }
             }
@@ -166,6 +166,7 @@ const createPoll = schedule.scheduleJob({
 
     bot.sendPoll(pollApi.GROUP_ID, question, pollApi.options, {
         is_anonymous: false,
+        message_thread_id: pollApi.THREAD_ID,
     }).then(async (poll) => {
         await pollApi.createPoll(poll.poll.id);
         console.log("Голосування створено:", poll.poll.id);
@@ -198,7 +199,7 @@ console.log(`Інтервал оновлення даних про світло:
 async function sendLightsOffsMessage() {
     await checkLightOffs()
         .then((data) => {
-            if (data) bot.sendMessage(pollApi.GROUP_ID, `Години відключень на ${data.date}:\n${data.hours.join('\n')}`)
+            if (data) bot.sendMessage(pollApi.GROUP_ID, `Години відключень на ${data.date}:\n${data.hours.join('\n')}`, {message_thread_id: pollApi.THREAD_ID})
         })
         .catch((err) => console.error(err));
 }
